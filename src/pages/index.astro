@@ -1,0 +1,653 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import VectorField from '../components/VectorField.astro';
+import WaveField from '../components/WaveField.astro';
+import { posts, postHref } from '../data/posts';
+
+const base = import.meta.env.BASE_URL;
+
+const featured = posts.slice(0, 2);
+
+const slides = featured.map((post, i) => ({
+  href: postHref(post, base),
+  eyebrow: `Featured note ${String(i + 1).padStart(2, '0')}`,
+  state: post.state === 'forthcoming' ? 'Forthcoming' : 'Published',
+  title: post.title,
+  abstract: post.abstract,
+  figLabel: post.figLabel ?? '',
+  figName: post.figName ?? '',
+}));
+---
+<BaseLayout title="Juan C. Gonzalez — Computational Editorialism">
+  <section class="billboard" aria-labelledby="billboard-title">
+    <div class="billboard-figure" aria-hidden="true">
+      <div class="slide-track" data-slide-track>
+        <a
+          class="slide"
+          href={slides[0].href}
+          aria-label={`Open ${slides[0].title}`}
+          data-index="0"
+          data-eyebrow={slides[0].eyebrow}
+          data-state={slides[0].state}
+          data-title={slides[0].title}
+          data-abstract={slides[0].abstract}
+          data-fig-label={slides[0].figLabel}
+          data-fig-name={slides[0].figName}
+        >
+          <VectorField cols={34} rows={20} period={18} fill />
+        </a>
+        <a
+          class="slide"
+          href={slides[1].href}
+          aria-label={`Open ${slides[1].title}`}
+          data-index="1"
+          data-eyebrow={slides[1].eyebrow}
+          data-state={slides[1].state}
+          data-title={slides[1].title}
+          data-abstract={slides[1].abstract}
+          data-fig-label={slides[1].figLabel}
+          data-fig-name={slides[1].figName}
+        >
+          <WaveField rows={11} samples={120} period={26} fill />
+        </a>
+      </div>
+    </div>
+
+    <article class="billboard-box billboard-title-card">
+      <p class="card-eyebrow">Computational Editorialism</p>
+
+      <h1 id="billboard-title" class="display">
+        <span class="line">Notes,</span>
+        <span class="line">simulations,</span>
+        <span class="line">and editorial</span>
+        <span class="line"><em>experiments.</em></span>
+      </h1>
+
+      <p class="lede">
+        A long-form publication and research notebook at the intersection
+        of computation, scientific visualization, and editorial design.
+      </p>
+
+      <p class="sub-lede">
+        Equations are typeset rather than embedded as decoration.
+        Code is presented as literature.
+        Visualizations behave as instruments of thought.
+      </p>
+    </article>
+
+    <aside class="billboard-box billboard-fig-card" aria-live="polite">
+      <div
+        class="card-progress"
+        role="progressbar"
+        aria-label="Time until next featured note"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      >
+        <div class="card-progress-bar" data-progress-bar></div>
+      </div>
+
+      <p class="fig-eyebrow">
+        <span data-fig-eyebrow>{slides[0].eyebrow}</span>
+        <span class="fig-sep" aria-hidden="true">·</span>
+        <span class="fig-state" data-fig-state>{slides[0].state}</span>
+      </p>
+
+      <h3 class="post-title" data-fig-title>{slides[0].title}</h3>
+
+      <p class="post-abstract" data-fig-abstract>{slides[0].abstract}</p>
+
+      <div class="fig-footer">
+        <p class="figmeta-label">
+          <span class="fig-num" data-fig-num>{slides[0].figLabel}</span>
+          <span class="fig-sep" aria-hidden="true">·</span>
+          <span class="fig-name" data-fig-name>{slides[0].figName}</span>
+        </p>
+
+        <div class="card-pager" role="tablist" aria-label="Featured note">
+          {slides.map((s, i) => (
+            <button
+              type="button"
+              class:list={['pager-btn', { active: i === 0 }]}
+              data-index={i}
+              role="tab"
+              aria-current={i === 0 ? 'true' : 'false'}
+              aria-label={`Show ${s.eyebrow} — ${s.title}`}
+            >
+              <span class="pager-num">{String(i + 1).padStart(2, '0')}</span>
+              <span class="dot" aria-hidden="true"></span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="below-fold">
+    <div class="below-fold-inner">
+      <section class="pages-section" aria-labelledby="pages-label">
+        <h2 id="pages-label" class="section-label">Pages</h2>
+        <ol class="toc">
+          <li>
+            <a href={`${base}blog`}>
+              <span class="num">01</span>
+              <span class="t">Blog</span>
+              <span class="d">Essays, notes, and computational experiments.</span>
+            </a>
+          </li>
+          <li>
+            <a href={`${base}about`}>
+              <span class="num">02</span>
+              <span class="t">About</span>
+              <span class="d">Author and intent.</span>
+            </a>
+          </li>
+          <li>
+            <a href={`${base}colophon`}>
+              <span class="num">03</span>
+              <span class="t">Colophon</span>
+              <span class="d">Construction and editorial philosophy.</span>
+            </a>
+          </li>
+        </ol>
+      </section>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ---------- Billboard ---------- */
+  .billboard {
+    position: relative;
+    width: 100%;
+    min-height: clamp(560px, 88svh, 960px);
+    overflow: hidden;
+    background: var(--color-bg);
+    isolation: isolate;
+  }
+
+  /* ---------- Figure / scroller ---------- */
+  .billboard-figure {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .slide-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 700ms cubic-bezier(0.65, 0, 0.35, 1);
+    will-change: transform;
+  }
+
+  .slide {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: block;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .slide:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: -6px;
+  }
+
+  /* ---------- Shared box treatment ---------- */
+  .billboard-box {
+    position: absolute;
+    z-index: 2;
+    background: var(--color-surface);
+    border: var(--rule);
+    padding: var(--space-10);
+  }
+
+  /* Only the fig card gets the transparent-by-default treatment. */
+  .billboard-fig-card {
+    background: color-mix(in srgb, var(--color-surface) 65%, transparent);
+    transition: background 280ms ease;
+  }
+
+  .billboard-fig-card:hover,
+  .billboard-fig-card:focus-within {
+    background: var(--color-surface);
+  }
+
+  /* Top-right: site identity + main copy */
+  .billboard-title-card {
+    top: var(--space-8);
+    right: var(--space-8);
+    max-width: 38rem;
+    width: calc(100% - 2 * var(--space-8));
+  }
+
+  /* Bottom-left: featured-note preview + controls */
+  .billboard-fig-card {
+    bottom: var(--space-8);
+    left: var(--space-8);
+    max-width: 34rem;
+    width: calc(100% - 2 * var(--space-8));
+    padding: var(--space-8);
+    /* Top border is replaced by the progress bar above. */
+    border-top: 0;
+  }
+
+  .card-eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--color-accent-strong);
+    margin-bottom: var(--space-5);
+  }
+
+  .display {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(1.875rem, 4vw, 3.125rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin: 0 0 var(--space-5);
+    color: var(--color-text);
+  }
+
+  .display .line {
+    display: block;
+  }
+
+  .display em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--color-accent-strong);
+    letter-spacing: -0.02em;
+  }
+
+  .lede {
+    font-family: var(--font-serif);
+    font-size: var(--fs-lg);
+    line-height: 1.45;
+    color: var(--color-text);
+    margin-bottom: var(--space-4);
+  }
+
+  .sub-lede {
+    font-family: var(--font-serif);
+    font-size: var(--fs-md);
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+  }
+
+  /* ---------- Fig card internals ---------- */
+  .fig-eyebrow {
+    margin: 0 0 var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-text-secondary);
+  }
+
+  .fig-eyebrow .fig-sep {
+    color: var(--color-rule);
+    margin: 0 var(--space-2);
+  }
+
+  .fig-eyebrow .fig-state {
+    color: var(--color-accent-strong);
+  }
+
+  .post-title {
+    margin: 0 0 var(--space-3);
+    font-family: var(--font-sans);
+    font-size: var(--fs-xl);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--color-text);
+  }
+
+  .post-abstract {
+    margin: 0 0 var(--space-6);
+    font-family: var(--font-serif);
+    font-size: var(--fs-md);
+    line-height: 1.55;
+    color: var(--color-text-secondary);
+  }
+
+  .fig-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: var(--rule);
+  }
+
+  .figmeta-label {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    color: var(--color-text-secondary);
+  }
+
+  .figmeta-label .fig-num {
+    color: var(--color-text);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .figmeta-label .fig-sep {
+    color: var(--color-rule);
+  }
+
+  /* Pager */
+  .card-pager {
+    display: inline-flex;
+    gap: var(--space-4);
+  }
+
+  .pager-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--color-text-secondary);
+    letter-spacing: 0.08em;
+  }
+
+  .pager-btn .pager-num {
+    text-transform: uppercase;
+  }
+
+  .pager-btn .dot {
+    display: inline-block;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    border: 1px solid var(--color-text-secondary);
+    background: transparent;
+    transition: background 160ms ease, border-color 160ms ease;
+  }
+
+  .pager-btn:hover {
+    color: var(--color-text);
+  }
+
+  .pager-btn:hover .dot {
+    border-color: var(--color-accent);
+  }
+
+  .pager-btn.active {
+    color: var(--color-text);
+  }
+
+  .pager-btn.active .dot {
+    background: var(--color-accent);
+    border-color: var(--color-accent-strong);
+  }
+
+  .pager-btn:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  /* Progress bar — rides the top edge of the fig card. */
+  .billboard-fig-card .card-progress {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    height: 3px;
+    background: var(--color-rule);
+    overflow: hidden;
+  }
+
+  .billboard-fig-card .card-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--color-accent);
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 760px) {
+    .billboard-title-card {
+      top: var(--space-4);
+      left: var(--space-4);
+      right: var(--space-4);
+      width: auto;
+      max-width: none;
+      padding: var(--space-6);
+    }
+    .billboard-fig-card {
+      bottom: var(--space-4);
+      left: var(--space-4);
+      right: var(--space-4);
+      width: auto;
+      max-width: none;
+      padding: var(--space-5);
+    }
+    .billboard {
+      min-height: clamp(640px, 92svh, 920px);
+    }
+  }
+
+  /* ---------- Below the fold ---------- */
+  .below-fold {
+    background: var(--color-bg);
+    padding: var(--space-20) 0;
+    border-top: var(--rule);
+  }
+
+  .below-fold-inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+    display: grid;
+    gap: var(--space-20);
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-5);
+    font-weight: 500;
+  }
+
+  .toc {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .toc li {
+    border-top: var(--rule);
+  }
+
+  .toc li:last-child {
+    border-bottom: var(--rule);
+  }
+
+  .toc a {
+    border: 0;
+    display: grid;
+    grid-template-columns: 4ch 1fr 2fr;
+    column-gap: var(--space-6);
+    align-items: baseline;
+    padding: var(--space-4) 0;
+    color: var(--color-text);
+  }
+
+  .toc a:hover {
+    color: var(--color-accent-strong);
+  }
+
+  .toc .num {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--color-text-secondary);
+    letter-spacing: 0.08em;
+  }
+
+  .toc .t {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: var(--fs-lg);
+    letter-spacing: -0.01em;
+  }
+
+  .toc .d {
+    font-family: var(--font-serif);
+    font-size: var(--fs-base);
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 560px) {
+    .toc a {
+      grid-template-columns: 4ch 1fr;
+    }
+    .toc .d {
+      grid-column: 2;
+      margin-top: var(--space-1);
+    }
+  }
+
+</style>
+
+<script>
+  /*
+   * Billboard carousel.
+   *
+   * - Two slides, auto-advancing every DURATION ms.
+   * - Progress bar inside the card shows time-to-next.
+   * - Hovering (or touching) the figure pauses the timer.
+   *   The card itself does not pause — it sits above the figure and
+   *   intercepts hover, so the figure's mouseleave fires, resuming.
+   * - Pager buttons jump to a specific slide and reset elapsed time.
+   * - Under prefers-reduced-motion: no auto-advance; pager still works.
+   */
+
+  (() => {
+    const billboard = document.querySelector<HTMLElement>('.billboard');
+    if (!billboard) return;
+
+    const figure = billboard.querySelector<HTMLElement>('.billboard-figure');
+    const track = billboard.querySelector<HTMLElement>('[data-slide-track]');
+    const figCard = billboard.querySelector<HTMLElement>('.billboard-fig-card');
+    if (!figure || !track || !figCard) return;
+
+    const slides = Array.from(track.querySelectorAll<HTMLElement>('.slide'));
+    const pagerButtons = Array.from(
+      figCard.querySelectorAll<HTMLButtonElement>('.pager-btn'),
+    );
+
+    // Scope target queries to the fig-card so they can't match slide elements
+    // (which carry data attributes of the same names as data sources).
+    const progressBar = figCard.querySelector<HTMLElement>('[data-progress-bar]');
+    const figEyebrow = figCard.querySelector<HTMLElement>('[data-fig-eyebrow]');
+    const figState = figCard.querySelector<HTMLElement>('[data-fig-state]');
+    const figTitle = figCard.querySelector<HTMLElement>('[data-fig-title]');
+    const figAbstract = figCard.querySelector<HTMLElement>('[data-fig-abstract]');
+    const figNum = figCard.querySelector<HTMLElement>('[data-fig-num]');
+    const figName = figCard.querySelector<HTMLElement>('[data-fig-name]');
+
+    const DURATION_MS = 12000;
+    const prefersReduced = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+
+    let active = 0;
+    let elapsed = 0;
+    let last = 0;
+    let paused = false;
+    let raf = 0;
+
+    const updateMeta = (slide: HTMLElement) => {
+      if (figEyebrow) figEyebrow.textContent = slide.dataset.eyebrow || '';
+      if (figState) figState.textContent = slide.dataset.state || '';
+      if (figTitle) figTitle.textContent = slide.dataset.title || '';
+      if (figAbstract) figAbstract.textContent = slide.dataset.abstract || '';
+      if (figNum) figNum.textContent = slide.dataset.figLabel || '';
+      if (figName) figName.textContent = slide.dataset.figName || '';
+    };
+
+    const setActive = (i: number) => {
+      active = ((i % slides.length) + slides.length) % slides.length;
+      track.style.transform = `translateX(-${active * 100}%)`;
+
+      pagerButtons.forEach((btn, idx) => {
+        const isActive = idx === active;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-current', isActive ? 'true' : 'false');
+      });
+
+      updateMeta(slides[active]);
+      elapsed = 0;
+      if (progressBar) progressBar.style.width = '0%';
+    };
+
+    const tick = (now: number) => {
+      if (!paused && !prefersReduced) {
+        if (last !== 0) elapsed += now - last;
+      }
+      last = now;
+
+      if (progressBar) {
+        const pct = Math.min(100, (elapsed / DURATION_MS) * 100);
+        progressBar.style.width = `${pct}%`;
+      }
+
+      if (elapsed >= DURATION_MS && !prefersReduced) {
+        setActive(active + 1);
+      }
+
+      raf = requestAnimationFrame(tick);
+    };
+
+    const pause = () => {
+      paused = true;
+      last = 0;
+    };
+
+    const resume = () => {
+      paused = false;
+      last = 0;
+    };
+
+    // Pause when cursor (or touch) lands on the figure. The card overlays
+    // the figure and intercepts pointer events, so the figure's mouseleave
+    // fires while hovering the card — i.e. timer keeps running over the card.
+    figure.addEventListener('mouseenter', pause);
+    figure.addEventListener('mouseleave', resume);
+    figure.addEventListener('touchstart', pause, { passive: true });
+    figure.addEventListener('touchend', resume);
+    figure.addEventListener('touchcancel', resume);
+
+    pagerButtons.forEach((btn, idx) => {
+      btn.addEventListener('click', () => setActive(idx));
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) pause();
+      else resume();
+    });
+
+    setActive(0);
+    raf = requestAnimationFrame(tick);
+  })();
+</script>

@@ -1,0 +1,148 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Frontmatter {
+  title: string;
+  eyebrow?: string;
+  description?: string;
+}
+
+interface Props {
+  frontmatter: Frontmatter;
+}
+
+const { frontmatter } = Astro.props;
+const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
+---
+<BaseLayout title={fullTitle} description={frontmatter.description}>
+  <article class="page">
+    <header class="page-header">
+      <div class="page-header-inner">
+        {frontmatter.eyebrow && <p class="eyebrow">{frontmatter.eyebrow}</p>}
+        <h1 class="page-title">{frontmatter.title}</h1>
+      </div>
+    </header>
+
+    <div class="prose">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .page {
+    max-width: var(--measure-wide);
+    margin: 0 auto;
+    padding: var(--space-16) var(--gutter) 0;
+  }
+
+  .page-header {
+    border-bottom: var(--rule);
+    padding-bottom: var(--space-8);
+    margin-bottom: var(--space-12);
+  }
+
+  .page-header-inner {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-accent-strong);
+  }
+
+  .page-title {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(2.25rem, 5.5vw, var(--fs-2xl));
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+  }
+
+  .prose {
+    font-family: var(--font-serif);
+    font-size: var(--fs-md);
+    line-height: var(--lh-prose);
+    max-width: var(--measure);
+    color: var(--color-text);
+  }
+
+  .prose :global(h2) {
+    font-family: var(--font-sans);
+    font-size: var(--fs-lg);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-top: var(--space-12);
+    margin-bottom: var(--space-4);
+    padding-top: var(--space-6);
+    border-top: var(--rule);
+  }
+
+  .prose :global(h2:first-child) {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .prose :global(h3) {
+    font-family: var(--font-sans);
+    font-size: var(--fs-base);
+    font-weight: 600;
+    letter-spacing: 0;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-secondary);
+  }
+
+  .prose :global(p) {
+    margin: 0 0 var(--space-5);
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: var(--space-6);
+    margin: 0 0 var(--space-5);
+  }
+
+  .prose :global(li) {
+    margin-bottom: var(--space-2);
+  }
+
+  .prose :global(li::marker) {
+    color: var(--color-text-secondary);
+  }
+
+  .prose :global(strong) {
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .prose :global(em) {
+    font-style: italic;
+  }
+
+  .prose :global(blockquote) {
+    border-left: 2px solid var(--color-accent);
+    padding-left: var(--space-4);
+    color: var(--color-text-secondary);
+    font-style: italic;
+    margin: var(--space-6) 0;
+  }
+
+  .prose :global(hr) {
+    border: 0;
+    border-top: var(--rule);
+    margin: var(--space-12) 0;
+  }
+
+  .prose :global(a) {
+    color: var(--color-accent-strong);
+    border-bottom-color: var(--color-rule);
+  }
+</style>

@@ -1,0 +1,159 @@
+---
+import type { Post } from '../data/posts';
+import { postsByYear, postHref, formatDate } from '../data/posts';
+
+interface Props {
+  posts: Post[];
+}
+
+const { posts } = Astro.props;
+const groups = postsByYear(posts);
+const base = import.meta.env.BASE_URL;
+---
+<ol class="blog-list" role="list">
+  {groups.map((group) => (
+    <li class="blog-group">
+      <p class="blog-year">{group.year}</p>
+
+      <ol class="blog-entries" role="list">
+        {group.posts.map((post) => {
+          const forthcoming = post.state === 'forthcoming';
+          return (
+            <li
+              class:list={['blog-entry', { 'is-forthcoming': forthcoming }]}
+              aria-label={forthcoming ? `${post.title}, forthcoming` : post.title}
+            >
+              <p class="blog-meta">
+                <time datetime={post.date}>{formatDate(post.date)}</time>
+                {forthcoming && (
+                  <>
+                    <span class="meta-sep" aria-hidden="true">·</span>
+                    <span class="blog-status">Forthcoming</span>
+                  </>
+                )}
+              </p>
+
+              {forthcoming ? (
+                <h3 class="blog-title">{post.title}</h3>
+              ) : (
+                <h3 class="blog-title">
+                  <a href={postHref(post, base)}>{post.title}</a>
+                </h3>
+              )}
+
+              <p class="blog-abstract">{post.abstract}</p>
+            </li>
+          );
+        })}
+      </ol>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .blog-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .blog-group {
+    display: grid;
+    grid-template-columns: minmax(5rem, 1fr) 6fr;
+    gap: var(--space-10);
+    padding: var(--space-8) 0;
+    border-top: var(--rule);
+  }
+
+  .blog-group:last-child {
+    border-bottom: var(--rule);
+  }
+
+  .blog-year {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text);
+    align-self: start;
+  }
+
+  .blog-entries {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-10);
+  }
+
+  .blog-entry {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .blog-meta {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--color-text-secondary);
+  }
+
+  .blog-meta time {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .blog-meta .meta-sep {
+    margin: 0 var(--space-2);
+    color: var(--color-rule);
+  }
+
+  .blog-meta .blog-status {
+    color: var(--color-accent-strong);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .blog-title {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    color: var(--color-text);
+  }
+
+  .blog-title a {
+    border: 0;
+    color: inherit;
+  }
+
+  .blog-title a:hover {
+    color: var(--color-accent-strong);
+  }
+
+  .blog-entry.is-forthcoming .blog-title {
+    color: var(--color-text-secondary);
+  }
+
+  .blog-abstract {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: var(--fs-base);
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    max-width: var(--measure);
+  }
+
+  @media (max-width: 560px) {
+    .blog-group {
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+    }
+    .blog-year {
+      letter-spacing: 0.06em;
+    }
+  }
+</style>

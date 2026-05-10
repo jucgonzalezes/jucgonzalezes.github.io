@@ -1,0 +1,63 @@
+---
+const year = new Date().getFullYear();
+const mode = import.meta.env.MODE;
+---
+<footer class="site-footer">
+  <div class="row">
+    <div class="cell">
+      <span class="k">Series</span>
+      <span class="v">Computational Editorialism</span>
+    </div>
+    <div class="cell">
+      <span class="k">Author</span>
+      <span class="v">Juan C. Gonzalez</span>
+    </div>
+    <div class="cell">
+      <span class="k">Year</span>
+      <span class="v">© {year}</span>
+    </div>
+    <div class="cell">
+      <span class="k">Build</span>
+      <span class="v">{mode}</span>
+    </div>
+    <div class="cell">
+      <span class="k">Version</span>
+      <span class="v">0.1.0</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: var(--rule);
+    padding: var(--space-6) var(--gutter);
+    margin-top: var(--space-24);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--color-text-secondary);
+  }
+
+  .row {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-6) var(--space-8);
+  }
+
+  .cell {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2);
+  }
+
+  .k {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+  }
+
+  .v {
+    color: var(--color-text);
+  }
+</style>

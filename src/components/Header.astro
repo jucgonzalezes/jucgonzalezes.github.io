@@ -1,0 +1,128 @@
+---
+const base = import.meta.env.BASE_URL;
+
+const nav = [
+  { href: base, label: 'Index' },
+  { href: `${base}blog`, label: 'Blog' },
+  { href: `${base}about`, label: 'About' },
+  { href: `${base}colophon`, label: 'Colophon' },
+];
+
+function normalize(p: string): string {
+  const trimmed = p.replace(/\/+$/, '');
+  return trimmed === '' ? '/' : trimmed;
+}
+
+const currentPath = normalize(Astro.url.pathname);
+---
+<header class="site-header">
+  <div class="row">
+    <a class="wordmark" href={base} aria-label="Home">
+      <span class="name">Juan C. Gonzalez</span>
+    </a>
+
+    <nav class="primary" aria-label="Primary">
+      <ul>
+        {nav.map((item) => {
+          const active = normalize(item.href) === currentPath;
+          return (
+            <li>
+              <a href={item.href} class:list={['nav-link', { active }]} aria-current={active ? 'page' : undefined}>
+                <span class="marker" aria-hidden="true">{active ? '●' : '○'}</span>
+                <span class="label">{item.label}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: var(--rule);
+    padding: var(--space-4) var(--gutter);
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+  }
+
+  .row {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-8);
+  }
+
+  .wordmark {
+    border: 0;
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-text);
+    letter-spacing: 0;
+  }
+
+  .wordmark:hover {
+    color: var(--color-text);
+  }
+
+  .name {
+    font-family: var(--font-sans);
+    font-size: var(--fs-lg);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--color-text);
+  }
+
+  nav.primary ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: var(--space-6);
+  }
+
+  .nav-link {
+    border: 0;
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: var(--fs-xs);
+    font-weight: 500;
+  }
+
+  .nav-link .marker {
+    font-size: 0.55em;
+    color: var(--color-accent);
+    transform: translateY(-0.15em);
+  }
+
+  .nav-link.active {
+    color: var(--color-text);
+  }
+
+  .nav-link:hover {
+    color: var(--color-text);
+  }
+
+  @media (max-width: 560px) {
+    .name {
+      font-size: var(--fs-md);
+    }
+    nav.primary ul {
+      gap: var(--space-3);
+    }
+    .nav-link {
+      letter-spacing: 0.04em;
+    }
+    .nav-link .marker {
+      display: none;
+    }
+  }
+</style>

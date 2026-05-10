@@ -1,0 +1,194 @@
+---
+/*
+ * SVG wave field.
+ *
+ * A vertical stack of horizontal sinusoids, each with its own spatial
+ * frequency, amplitude, phase, and travel speed. Theme-aware via
+ * --plot-series-* tokens. Pauses when off screen, freezes under
+ * prefers-reduced-motion.
+ */
+
+interface Props {
+  rows?: number;
+  samples?: number;
+  fill?: boolean;
+  period?: number; // seconds for one phase cycle
+}
+
+const { rows = 11, samples = 120, fill = false, period = 26 } = Astro.props;
+
+// viewBox dimensions
+const W = 100;
+const H = 60;
+
+const rowData: {
+  y: number;
+  freq: number;
+  amp: number;
+  speed: number;
+  phase0: number;
+}[] = [];
+
+for (let i = 0; i < rows; i++) {
+  rowData.push({
+    y: ((i + 0.5) / rows) * H,
+    freq: 1 + i * 0.18,
+    amp: 1.55 - (i / rows) * 0.4,
+    speed: 0.55 + i * 0.085,
+    phase0: i * 0.6,
+  });
+}
+
+const preserveAspectRatio = fill ? 'xMidYMid slice' : 'xMidYMid meet';
+---
+<div
+  class:list={['wave-field', { 'is-fill': fill }]}
+  data-rows={rows}
+  data-samples={samples}
+  data-period={period}
+  data-w={W}
+>
+  <svg
+    viewBox={`0 0 ${W} ${H}`}
+    preserveAspectRatio={preserveAspectRatio}
+    role="img"
+    aria-label="Animated wave field — traveling sinusoids stacked vertically."
+  >
+    {rowData.map((row) => (
+      <path
+        class="wave"
+        data-y={row.y}
+        data-freq={row.freq}
+        data-amp={row.amp}
+        data-speed={row.speed}
+        data-phase0={row.phase0}
+      />
+    ))}
+  </svg>
+</div>
+
+<style>
+  .wave-field {
+    width: 100%;
+  }
+
+  .wave-field svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .wave-field.is-fill {
+    width: 100%;
+    height: 100%;
+  }
+
+  .wave-field.is-fill svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .wave {
+    fill: none;
+    stroke: var(--plot-series-2);
+    stroke-width: 0.22;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.6;
+  }
+</style>
+
+<script>
+  type WaveRow = {
+    el: SVGPathElement;
+    y: number;
+    freq: number;
+    amp: number;
+    speed: number;
+    phase0: number;
+  };
+
+  const fields = document.querySelectorAll<HTMLDivElement>('.wave-field');
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  fields.forEach((root) => {
+    const periodSec = Number(root.dataset.period || 26);
+    const W = Number(root.dataset.w || 100);
+    const samples = Number(root.dataset.samples || 120);
+
+    const rows: WaveRow[] = Array.from(
+      root.querySelectorAll<SVGPathElement>('.wave'),
+    ).map((el) => ({
+      el,
+      y: Number(el.dataset.y),
+      freq: Number(el.dataset.freq),
+      amp: Number(el.dataset.amp),
+      speed: Number(el.dataset.speed),
+      phase0: Number(el.dataset.phase0),
+    }));
+
+    const apply = (t: number) => {
+      const phase = t * Math.PI * 2;
+      for (const row of rows) {
+        const k = (row.freq * 2 * Math.PI) / W;
+        let d = '';
+        for (let s = 0; s <= samples; s++) {
+          const x = (s / samples) * W;
+          const y =
+            row.y +
+            row.amp * Math.sin(k * x - phase * row.speed + row.phase0) +
+            row.amp * 0.4 *
+              Math.sin(k * 1.8 * x + phase * row.speed * 0.55 + row.phase0 * 1.3);
+          d += (s === 0 ? 'M' : 'L') + x.toFixed(2) + ' ' + y.toFixed(2);
+        }
+        row.el.setAttribute('d', d);
+      }
+    };
+
+    if (prefersReduced) {
+      apply(0);
+      return;
+    }
+
+    let raf = 0;
+    let elapsed = 0;
+    let last = 0;
+    let running = false;
+
+    const tick = (now: number) => {
+      if (last !== 0) elapsed += now - last;
+      last = now;
+      apply(elapsed / 1000 / periodSec);
+      raf = requestAnimationFrame(tick);
+    };
+
+    const start = () => {
+      if (running) return;
+      running = true;
+      last = 0;
+      raf = requestAnimationFrame(tick);
+    };
+
+    const stop = () => {
+      if (!running) return;
+      running = false;
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+
+    apply(0);
+
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) start();
+        else stop();
+      }
+    });
+    io.observe(root);
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stop();
+      else start();
+    });
+  });
+</script>

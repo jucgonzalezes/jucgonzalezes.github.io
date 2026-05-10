@@ -1,0 +1,119 @@
+/*
+ * Design tokens.
+ *
+ * All color, typography, spacing, and visualization values live here as
+ * custom properties. Dark mode is defined alongside light so that a future
+ * `[data-theme="dark"]` toggle on <html> is a one-line activation.
+ *
+ * Visualization tokens are intentionally semantic (--plot-axis, --plot-series-1)
+ * so SVG figures can inherit theme state without hardcoded hex values.
+ */
+
+:root {
+  /* ---------- Core neutrals (light) ---------- */
+  --color-bg: #F5F4F0;
+  --color-surface: #FAF9F6;
+  --color-text: #111111;
+  --color-text-secondary: #5E5E59;
+  --color-rule: #CFCBC3;
+
+  /* ---------- Editorial accent ---------- */
+  --color-accent: #D8A632;
+  --color-accent-strong: #B7861E;
+  --color-accent-soft: #E7C46A;
+
+  /* ---------- Visualization palette (raw) ---------- */
+  --plot-ink-blue: #355C7D;
+  --plot-ochre: #D8A632;
+  --plot-oxide-red: #B44C43;
+  --plot-slate-teal: #4E7C74;
+  --plot-deep-violet: #6C5B7B;
+  --plot-graphite: #5B5B5B;
+  --plot-burnt-orange: #C97B36;
+  --plot-olive-sage: #7A8B5A;
+
+  /* ---------- Visualization tokens (semantic) ---------- */
+  --plot-bg: var(--color-bg);
+  --plot-axis: var(--color-text-secondary);
+  --plot-grid: var(--color-rule);
+  --plot-annotation: var(--color-text-secondary);
+  --plot-label: var(--color-text);
+  --plot-series-1: var(--plot-ink-blue);
+  --plot-series-2: var(--plot-ochre);
+  --plot-series-3: var(--plot-oxide-red);
+  --plot-series-4: var(--plot-slate-teal);
+  --plot-series-5: var(--plot-deep-violet);
+  --plot-series-6: var(--plot-graphite);
+  --plot-series-7: var(--plot-burnt-orange);
+  --plot-series-8: var(--plot-olive-sage);
+  --plot-highlight: var(--color-accent);
+
+  /* ---------- Typography ---------- */
+  --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "Source Serif 4 Variable", "Source Serif 4", "Source Serif Pro", Georgia, serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Type scale */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-md: 1.0625rem;
+  --fs-lg: 1.375rem;
+  --fs-xl: 1.875rem;
+  --fs-2xl: 2.625rem;
+  --fs-3xl: 4rem;
+  --fs-display: 6.5rem;
+
+  --lh-tight: 1.05;
+  --lh-snug: 1.25;
+  --lh-base: 1.5;
+  --lh-prose: 1.65;
+
+  /* ---------- Spacing (8px base) ---------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* ---------- Layout ---------- */
+  --content-max: 80rem;
+  --measure: 36rem;
+  --measure-wide: 48rem;
+  --gutter: var(--space-6);
+
+  /* ---------- Rules ---------- */
+  --rule: 1px solid var(--color-rule);
+  --rule-strong: 2px solid var(--color-text);
+}
+
+/* Dark theme — defined now, activated later by [data-theme="dark"] on <html>. */
+[data-theme="dark"] {
+  --color-bg: #121212;
+  --color-surface: #1A1A1A;
+  --color-text: #F2F1ED;
+  --color-text-secondary: #A8A39B;
+  --color-rule: #343434;
+
+  --color-accent: #E0B84F;
+  --color-accent-strong: #D8A632;
+  --color-accent-soft: #6E5928;
+
+  /* Visualization series subtly desaturated in dark for readability. */
+  --plot-ink-blue: #5C86A8;
+  --plot-ochre: #E0B84F;
+  --plot-oxide-red: #C66A60;
+  --plot-slate-teal: #6E9A92;
+  --plot-deep-violet: #897899;
+  --plot-graphite: #8A8A8A;
+  --plot-burnt-orange: #D89352;
+  --plot-olive-sage: #95A579;
+}
