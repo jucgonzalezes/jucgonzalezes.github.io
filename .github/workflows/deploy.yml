@@ -14,6 +14,13 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
+# Force all JavaScript actions onto Node 24. Removes the Node-20 deprecation
+# warning from transitively-pinned dependencies (e.g. upload-artifact bundled
+# inside upload-pages-artifact). Node 24 becomes the runner default on
+# 2026-06-02; this flag just opts in early.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
   build:
     runs-on: ubuntu-latest
