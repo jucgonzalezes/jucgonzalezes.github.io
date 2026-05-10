@@ -25,6 +25,24 @@ const base = import.meta.env.BASE_URL;
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
     <title>{title}</title>
+
+    {/*
+      Theme boot script — runs synchronously before any CSS or first paint
+      so we never flash the wrong theme. `is:inline` keeps Astro from
+      bundling/deferring it.
+    */}
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = stored || (systemDark ? 'dark' : 'light');
+          document.documentElement.dataset.theme = theme;
+        } catch (e) {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>

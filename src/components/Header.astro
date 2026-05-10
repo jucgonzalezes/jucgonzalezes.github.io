@@ -1,4 +1,6 @@
 ---
+import ThemeToggle from './ThemeToggle.astro';
+
 const base = import.meta.env.BASE_URL;
 
 const nav = [
@@ -21,21 +23,27 @@ const currentPath = normalize(Astro.url.pathname);
       <span class="name">Juan C. Gonzalez</span>
     </a>
 
-    <nav class="primary" aria-label="Primary">
-      <ul>
-        {nav.map((item) => {
-          const active = normalize(item.href) === currentPath;
-          return (
-            <li>
-              <a href={item.href} class:list={['nav-link', { active }]} aria-current={active ? 'page' : undefined}>
-                <span class="marker" aria-hidden="true">{active ? '●' : '○'}</span>
-                <span class="label">{item.label}</span>
-              </a>
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
+    <div class="right">
+      <nav class="primary" aria-label="Primary">
+        <ul>
+          {nav.map((item) => {
+            const active = normalize(item.href) === currentPath;
+            return (
+              <li>
+                <a href={item.href} class:list={['nav-link', { active }]} aria-current={active ? 'page' : undefined}>
+                  <span class="marker" aria-hidden="true">{active ? '●' : '○'}</span>
+                  <span class="label">{item.label}</span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
+      <span class="divider" aria-hidden="true"></span>
+
+      <ThemeToggle />
+    </div>
   </div>
 </header>
 
@@ -54,6 +62,18 @@ const currentPath = normalize(Astro.url.pathname);
     justify-content: space-between;
     align-items: center;
     gap: var(--space-8);
+  }
+
+  .right {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .divider {
+    width: 1px;
+    height: 1rem;
+    background: var(--color-rule);
   }
 
   .wordmark {
@@ -122,6 +142,12 @@ const currentPath = normalize(Astro.url.pathname);
       letter-spacing: 0.04em;
     }
     .nav-link .marker {
+      display: none;
+    }
+    .right {
+      gap: var(--space-3);
+    }
+    .divider {
       display: none;
     }
   }
