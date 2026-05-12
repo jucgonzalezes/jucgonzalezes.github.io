@@ -25,10 +25,11 @@ The interface attempts to disappear into the act of reading and exploration.
 
 Typography forms the primary structural language of the site.
 
-The typographic system combines:
-- a modern sans-serif for interface, navigation, and structural hierarchy
-- a serif layer for extended reading and reflective writing
-- and monospace typography for code, annotations, references, coordinates, and computational elements
+The system is set in three families, each carrying a distinct editorial voice:
+
+- **Inter** — sans-serif for interface, navigation, headings, and structural hierarchy
+- **Source Serif 4** — serif for extended reading, essay bodies, and reflective writing
+- **IBM Plex Mono** — monospace for code, annotations, references, coordinates, figure labels, eyebrows, and the colophon register
 
 Typography is treated not as branding, but as architecture.
 
@@ -49,6 +50,10 @@ The site intentionally favors:
 - and strong typographic anchoring
 
 over decorative interface patterns.
+
+Some pages — beginning with this one's sibling, the About page — expose their grid directly. The treatment is a decentered three-panel composition: two visible vertical pillars divide the viewport into an unequal asymmetric grid, with the body column anchored to the left and a deliberately wider right field reserved for marginalia, figures, and side annotations. Horizontal rules at full viewport width mark the article frame and each section break. The asymmetry is structural, not stylistic — it is what gives long-form reading room to be quiet on the left while the figures and apparatus speak on the right.
+
+A full account of the grid, the bleed paradigms, the figure apparatus, and the structured colophon system lives in `docs/design-system.md`.
 
 ## Color System
 
