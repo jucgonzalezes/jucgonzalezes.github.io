@@ -1,11 +1,11 @@
 ---
 layout: ../layouts/PageLayout.astro
-title: Lab
-description: A specimen page exercising every typographic register the publication system claims to support.
+title: Design System
+description: A specimen page exercising every typographic and compositional register the publication system claims to support.
 gridded: true
 ---
 
-This page is a specimen. It documents the typographic system *using* the system — every register named in `docs/design-system.md` appears at least once, in context, so the prototype is no longer asserting capabilities it doesn't demonstrate. Read it the way you'd read a font specimen book, or a publication style sheet for a journal you're about to write for.
+This page is a specimen. It documents the design system *using* the system. Every register named in `docs/design-system.md` appears at least once, in context, so the prototype is no longer asserting capabilities it doesn't demonstrate. Read it the way you'd read a font specimen book, or the publication style sheet for a journal you're about to write for.
 
 ## Body & inline marks
 
@@ -245,8 +245,5 @@ The colophon is the trailing register of the article — the place where attribu
 </dl>
 <dl>
 <div><dt>Revised</dt><dd>2026-05-11</dd></div>
-</dl>
-<dl>
-<div><dt>License</dt><dd>CC BY 4.0</dd></div>
 </dl>
 </div>

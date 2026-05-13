@@ -1,28 +1,19 @@
 ---
 const year = new Date().getFullYear();
-const mode = import.meta.env.MODE;
+const base = import.meta.env.BASE_URL;
 ---
 <footer class="site-footer">
   <div class="row">
     <div class="cell">
-      <span class="k">Series</span>
-      <span class="v">Computational Editorialism</span>
-    </div>
-    <div class="cell">
-      <span class="k">Author</span>
-      <span class="v">Juan C. Gonzalez</span>
-    </div>
-    <div class="cell">
       <span class="k">Year</span>
-      <span class="v">© {year}</span>
-    </div>
-    <div class="cell">
-      <span class="k">Build</span>
-      <span class="v">{mode}</span>
+      <span class="v">{year}</span>
     </div>
     <div class="cell">
       <span class="k">Version</span>
       <span class="v">0.1.0</span>
+    </div>
+    <div class="cell cell--link">
+      <a href={`${base}design-system`}>Design System</a>
     </div>
   </div>
 </footer>
@@ -58,6 +49,20 @@ const mode = import.meta.env.MODE;
   }
 
   .v {
+    color: var(--color-text);
+  }
+
+  .cell--link {
+    margin-left: auto;
+  }
+
+  .cell--link a {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-secondary);
+  }
+
+  .cell--link a:hover {
     color: var(--color-text);
   }
 </style>
