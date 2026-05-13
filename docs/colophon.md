@@ -85,6 +85,8 @@ Visualizations are rendered primarily in SVG and integrate with the surrounding 
 
 The site is deployed as a static build to GitHub Pages.
 
+Discoverability and link-share metadata are handled at build time. `@astrojs/sitemap` emits `sitemap-index.xml` and `sitemap-0.xml` automatically from the configured `site` value; `robots.txt` allows all crawlers and points to the sitemap index. The shared `BaseLayout` emits a `<link rel="canonical">` plus the Open Graph (`og:title`, `og:description`, `og:url`, `og:type`, `og:site_name`) and Twitter card meta for every page, so unfurled links render predictably across clients. No `og:image` is shipped yet — the cardless summary is the honest representation of what exists today.
+
 ## Disclaimer: AI usage
 
 All text content on this site is written by me. The design system (typography, grid, color, composition, interaction) is chosen and refined according to my own principles, through deliberate iteration. The implementation, however, including the CSS, the Astro components, and the build configuration, is largely written by [Claude](https://claude.com).

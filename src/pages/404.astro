@@ -1,24 +1,205 @@
 ---
-import PageLayout from '../layouts/PageLayout.astro';
-
-const frontmatter = {
-  title: 'Page not found',
-  eyebrow: 'Error 404',
-  description: 'The requested page could not be found.',
-};
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
-<PageLayout frontmatter={frontmatter}>
-  <p>
-    The page you are looking for does not exist, or has been moved. This
-    site is small and still under construction, so links sometimes shift
-    as sections are reorganized.
-  </p>
+<BaseLayout
+  title="Page not found — Juan C. Gonzalez"
+  description="The requested page could not be found."
+>
+  <section class="error">
+    <h1 class="error-numerals">404</h1>
 
-  <p>
-    From here you can return to the
-    {' '}<a href="/">cover</a>, the
-    {' '}<a href="/about">about page</a>, the
-    {' '}<a href="/lab">lab index</a>, or the
-    {' '}<a href="/blog">blog archive</a>.
-  </p>
-</PageLayout>
+    <hr class="error-rule" aria-hidden="true" />
+
+    <div class="error-voice">
+      <p>
+        The page you are looking for does not exist, or has been moved.
+        This site is small and still under construction, so links
+        sometimes shift as sections are reorganized.
+      </p>
+      <p>
+        From here you can return to any of the sections below.
+      </p>
+    </div>
+
+    <nav class="error-index" aria-label="Navigate to">
+      <a href="/">
+        <span class="label">Cover</span>
+        <span class="path">/</span>
+      </a>
+      <a href="/about">
+        <span class="label">About</span>
+        <span class="path">/about</span>
+      </a>
+      <a href="/lab">
+        <span class="label">Lab</span>
+        <span class="path">/lab</span>
+      </a>
+      <a href="/blog">
+        <span class="label">Blog</span>
+        <span class="path">/blog</span>
+      </a>
+    </nav>
+  </section>
+</BaseLayout>
+
+<style>
+  /*
+   * 404 as poster — Iris's "diagonal mass" composition.
+   *
+   * 12-column virtual grid for placement only (not drawn). The numerals
+   * hang from the upper-left as a single typographic event; the voice
+   * (paragraph + navigation index) settles into the lower-right
+   * quadrant. One horizontal hairline at viewport width sits on the
+   * numerals' baseline and anchors both quadrants to a shared horizon.
+   *
+   * Row plan:
+   *   1  upper breathing space                    (2fr)
+   *   2  numerals                                 (auto)
+   *   3  hairline                                 (auto, 1px)
+   *   4  voice (paragraphs)                       (auto)
+   *   5  breathing above link table               (1fr)
+   *   6  link table                               (auto)
+   *   7  breathing below link table               (1fr)
+   *
+   * The 2fr above the numerals keeps the baseline above vertical center.
+   * Paragraphs hang from the hairline (anchored, not floating). The link
+   * table sits centered in the silence below the paragraphs, with equal
+   * 1fr rows above and below.
+   */
+  /*
+   * Make <main> a flex column on this page only so the section can
+   * claim exactly the space between header and footer via flex: 1.
+   * Avoids hand-tuning `min-height: calc(100vh - <chrome>)`, which
+   * breaks when the footer wraps or its margin changes.
+   */
+  :global(main:has(.error)) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .error {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: var(--gutter);
+    grid-template-rows: 2fr auto auto auto 1fr auto 1fr;
+    padding: var(--space-8) var(--gutter) var(--space-12);
+    align-content: stretch;
+  }
+
+  .error-numerals {
+    grid-column: 1 / span 8;
+    grid-row: 2;
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    /* tabular-nums keeps 4-0-4 on a regular rhythm at display size;
+       without it the proportional glyph widths read as casually set. */
+    font-variant-numeric: lining-nums tabular-nums;
+    font-size: clamp(9rem, 22vw, 17rem);
+    letter-spacing: -0.04em;
+    line-height: 0.85;
+    color: var(--color-text);
+  }
+
+  /* Full-viewport-width hairline anchored to the numerals' baseline.
+     justify-self: center + width: 100vw extends past the section's
+     gutters to viewport edges; the section's border-box is 100vw so
+     this never escapes its parent and never adds horizontal scroll. */
+  .error-rule {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    align-self: start;
+    justify-self: center;
+    width: 100vw;
+    height: 1px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--color-rule);
+  }
+
+  .error-voice {
+    grid-column: 7 / span 6;
+    grid-row: 4;
+    max-width: var(--measure);
+    /* Paragraph hangs from the hairline. --space-8 gives the prose room
+       to read as a separate event, not pinned to the line. */
+    padding-top: var(--space-8);
+  }
+
+  .error-voice p {
+    font-family: var(--font-serif);
+    font-size: var(--fs-md);
+    line-height: var(--lh-prose);
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .error-voice p + p {
+    margin-top: var(--space-4);
+  }
+
+  .error-index {
+    grid-column: 7 / span 6;
+    grid-row: 6;
+    max-width: var(--measure);
+    display: grid;
+    row-gap: var(--space-3);
+    margin: 0;
+  }
+
+  .error-index a {
+    display: grid;
+    grid-template-columns: minmax(5rem, max-content) 1fr;
+    column-gap: var(--space-6);
+    align-items: baseline;
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-rule);
+    transition: border-color 120ms ease;
+  }
+
+  .error-index a:hover,
+  .error-index a:focus-visible {
+    border-bottom-color: var(--color-text);
+  }
+
+  .error-index .label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-text);
+  }
+
+  .error-index .path {
+    font-family: var(--font-sans);
+    font-size: var(--fs-base);
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 1100px) {
+    .error {
+      grid-template-rows: auto auto auto auto auto;
+      row-gap: var(--space-6);
+    }
+    .error-numerals {
+      grid-column: 1 / -1;
+    }
+    .error-voice {
+      grid-column: 1 / -1;
+      padding-top: var(--space-8);
+    }
+    .error-index {
+      grid-column: 1 / -1;
+      margin-top: var(--space-6);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .error-numerals {
+      letter-spacing: -0.03em;
+    }
+  }
+</style>
