@@ -1,0 +1,24 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+
+const frontmatter = {
+  title: 'Page not found',
+  eyebrow: 'Error 404',
+  description: 'The requested page could not be found.',
+};
+---
+<PageLayout frontmatter={frontmatter}>
+  <p>
+    The page you are looking for does not exist, or has been moved. This
+    site is small and still under construction, so links sometimes shift
+    as sections are reorganized.
+  </p>
+
+  <p>
+    From here you can return to the
+    {' '}<a href="/">cover</a>, the
+    {' '}<a href="/about">about page</a>, the
+    {' '}<a href="/lab">lab index</a>, or the
+    {' '}<a href="/blog">blog archive</a>.
+  </p>
+</PageLayout>
