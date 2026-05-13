@@ -117,6 +117,55 @@ pre code {
   padding: 0;
 }
 
+/*
+ * Shiki code-block wiring — dual-theme (min-light / min-dark) via CSS
+ * variables. With `defaultColor: false` in astro.config.mjs, Shiki emits
+ * per-token CSS custom properties (--shiki-light, --shiki-dark) but does
+ * NOT apply inline color/background. The rules below wire those
+ * properties to the active theme without needing !important. The pre's
+ * surface background and 1px rule continue to come from the generic
+ * `pre` rule above — Shiki only provides the per-token text colors.
+ *
+ * Iris v5 #2: min-light/min-dark keep the structural information of the
+ * code (comments, keywords, strings) visible through ~4 muted hues
+ * rather than terminal-bright colors. Editorial register, not terminal.
+ */
+pre.astro-code,
+pre.astro-code code,
+pre.astro-code span {
+  color: var(--shiki-light);
+}
+
+[data-theme="dark"] pre.astro-code,
+[data-theme="dark"] pre.astro-code code,
+[data-theme="dark"] pre.astro-code span {
+  color: var(--shiki-dark);
+}
+
+/*
+ * Language label — Astro emits `data-language="<lang>"` on the pre, so
+ * the language identifier is available without a custom transformer.
+ * Rendered as a small mono uppercase tag in the top-right of the block,
+ * matching the eyebrow / figure-number register. Acts as the editorial
+ * equivalent of a margin-note labeling the code's language.
+ */
+pre.astro-code {
+  position: relative;
+}
+
+pre.astro-code[data-language]::before {
+  content: attr(data-language);
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}
+
 /* ---------- Selection ---------- */
 ::selection {
   background: var(--color-accent-soft);

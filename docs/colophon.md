@@ -9,12 +9,14 @@ The site is intentionally transparent in both construction and philosophy.
 ## Editorial Philosophy
 
 The design prioritizes:
+
 - readability over novelty
 - hierarchy over decoration
 - structure over visual noise
 - and sustained attention over rapid consumption
 
 Every visual element is expected to contribute either:
+
 - informational clarity,
 - compositional balance,
 - or conceptual meaning.
@@ -25,10 +27,11 @@ The interface attempts to disappear into the act of reading and exploration.
 
 Typography forms the primary structural language of the site.
 
-The typographic system combines:
-- a modern sans-serif for interface, navigation, and structural hierarchy
-- a serif layer for extended reading and reflective writing
-- and monospace typography for code, annotations, references, coordinates, and computational elements
+The system is set in three families, each carrying a distinct editorial voice:
+
+- **Inter** — sans-serif for interface, navigation, headings, and structural hierarchy
+- **Source Serif 4** — serif for extended reading, essay bodies, and reflective writing
+- **IBM Plex Mono** — monospace for code, annotations, references, coordinates, figure labels, eyebrows, and the colophon register
 
 Typography is treated not as branding, but as architecture.
 
@@ -43,6 +46,7 @@ The grid remains partially visible throughout the site as part of the visual lan
 Spacing and alignment are treated as compositional tools rather than invisible implementation details.
 
 The site intentionally favors:
+
 - asymmetrical balance
 - structural whitespace
 - modular composition
@@ -50,11 +54,16 @@ The site intentionally favors:
 
 over decorative interface patterns.
 
+Some pages — beginning with this one's sibling, the About page — expose their grid directly. The treatment is a decentered three-panel composition: two visible vertical pillars divide the viewport into an unequal asymmetric grid, with the body column anchored to the left and a deliberately wider right field reserved for marginalia, figures, and side annotations. Horizontal rules at full viewport width mark the article frame and each section break. The asymmetry is structural, not stylistic — it is what gives long-form reading room to be quiet on the left while the figures and apparatus speak on the right.
+
+A full account of the grid, the bleed paradigms, the figure apparatus, and the structured colophon system lives in `docs/design-system.md`.
+
 ## Color System
 
 The visual palette is intentionally restrained.
 
 The interface primarily relies on:
+
 - warm paper-like neutrals
 - dark ink-like typography
 - and a limited range of accent tones inspired by scientific publishing and editorial print systems
@@ -75,6 +84,12 @@ Typography is self-hosted via Fontsource. No external font CDNs are used.
 Visualizations are rendered primarily in SVG and integrate with the surrounding theme through CSS variables. JavaScript is loaded only where a figure or simulation requires it.
 
 The site is deployed as a static build to GitHub Pages.
+
+## Disclaimer: AI usage
+
+All text content on this site is written by me. The design system (typography, grid, color, composition, interaction) is chosen and refined according to my own principles, through deliberate iteration. The implementation, however, including the CSS, the Astro components, and the build configuration, is largely written by [Claude](https://claude.com).
+
+AI is not the brain and heart of this motor, it is the hands that make its existence possible. Contents and the designs are my own.
 
 ## Ongoing Construction
 

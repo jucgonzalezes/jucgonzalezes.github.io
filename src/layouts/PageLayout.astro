@@ -5,6 +5,7 @@ interface Frontmatter {
   title: string;
   eyebrow?: string;
   description?: string;
+  gridded?: boolean;
 }
 
 interface Props {
@@ -15,12 +16,13 @@ const { frontmatter } = Astro.props;
 const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
 ---
 <BaseLayout title={fullTitle} description={frontmatter.description}>
-  <article class="page">
+  <article class:list={['page', { 'has-grid': frontmatter.gridded }]}>
+    {frontmatter.eyebrow && (
+      <p class="eyebrow">{frontmatter.eyebrow}</p>
+    )}
+
     <header class="page-header">
-      <div class="page-header-inner">
-        {frontmatter.eyebrow && <p class="eyebrow">{frontmatter.eyebrow}</p>}
-        <h1 class="page-title">{frontmatter.title}</h1>
-      </div>
+      <h1 class="page-title">{frontmatter.title}</h1>
     </header>
 
     <div class="prose">
@@ -36,23 +38,638 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
     padding: var(--space-16) var(--gutter) 0;
   }
 
+  /*
+   * Gridded variant — decentered three-panel composition.
+   *
+   *   panel 1 (left margin)   = (100vw - --measure-wide) / 4  ← --asymm-left
+   *   panel 2 (article)       = the remainder                  ← grows leftward
+   *   panel 3 (right margin)  = (100vw - --measure-wide) / 2  ← --asymm-right
+   *
+   * Panel 3 is unchanged from the original centered layout. Panel 1 is half
+   * its original width. Panel 2 absorbs the freed space. Net effect: the
+   * article shifts left, the right gutter becomes notably wider than the
+   * left, and the composition reads asymmetrically across the page — the
+   * Crouwel / Stedelijk move rather than the Müller-Brockmann centered cover.
+   *
+   * The body text stays capped at --measure (36rem) and left-aligns inside
+   * the wider article box, so the extra space appears on the right as a
+   * deliberate margin field (room for marginalia, captions, asymmetric
+   * figures later).
+   *
+   * Pseudos (one per horizontal rule, plus two pillars on <main>):
+   *   article::before     = top of the article frame    (full viewport width)
+   *   article::after      = bottom of the article frame (full viewport width)
+   *   page-header::after  = top of the header block     (rule above the title)
+   *   h2::before          = top of each section
+   *   main::before/after  = vertical pillars at panel-1/panel-3 boundaries
+   *
+   * Because the article is no longer viewport-centered, the old
+   * `left: 50%; transform: translateX(-50%)` trick no longer makes the
+   * 100vw pseudos span edge to edge. Each rule now positions its left
+   * edge explicitly at viewport-left (negative offset in element-local
+   * coords). The math is captured by --asymm-left + --gutter where the
+   * element bleeds.
+   */
+  /*
+   * Panel widths are defined on `main:has(.has-grid)` (see the :global
+   * block at the bottom of this file) so they cascade to the article,
+   * the pillars, the rules, and the bleed paradigms from a single source.
+   * Read them here as inherited tokens.
+   *
+   *   --asymm-left   panel-1 width
+   *   --asymm-right  panel-3 width
+   *   --asymm-center central-panel width (the article column)
+   */
+  .page.has-grid {
+    position: relative;
+    max-width: none;
+    margin-left: var(--asymm-left);
+    margin-right: var(--asymm-right);
+    padding-bottom: var(--space-16);
+  }
+
+  /* Top and bottom horizontal lines for the article — full viewport width.
+     Both sides anchored explicitly via `left` + `right` (negative values
+     escape the article's panel-1/panel-3 margins). Avoids relying on
+     `width: 100vw`, which can be trimmed by ancestor clipping when other
+     content (bleeds, etc.) creates horizontal overflow. */
+  .page.has-grid::before,
+  .page.has-grid::after {
+    content: '';
+    position: absolute;
+    left: calc(-1 * var(--asymm-left));
+    right: calc(-1 * var(--asymm-right));
+    height: 1px;
+    background: var(--color-rule);
+    pointer-events: none;
+  }
+  .page.has-grid::before { top: 0; }
+  .page.has-grid::after { bottom: 0; }
+
+  /*
+   * Internal dividers — page-header top + every h2 top.
+   *
+   * Each element keeps its -gutter bleed so it extends out to the article's
+   * outer box. In element-local coords its left edge sits at -gutter; its
+   * viewport-left is therefore `asymm-left - gutter`. To make a 100vw rule
+   * span viewport edge to edge, the rule's left (in element-local coords)
+   * must be `gutter - asymm-left`. The original border on the element is
+   * removed since the pseudo replaces it.
+   */
+  .page.has-grid .page-header {
+    position: relative;
+    margin-left: calc(-1 * var(--gutter));
+    margin-right: calc(-1 * var(--gutter));
+    /* Asymmetric vertical padding: title hangs from the top rule with
+       --frame-pad-y above (the rhythm token shared by other framed heads),
+       then a larger gap below so the title reads as PLACED on the rule
+       rather than CENTERED in a box. Iris/Ruder: vertical paddings should
+       rarely be equal — the eye reads down, not symmetrically. */
+    padding: var(--frame-pad-y) var(--gutter) var(--space-12);
+    border-bottom: 0;
+  }
+
+  .page.has-grid .page-title {
+    /* Display scale only on the gridded variant — the framed-header is
+       monumental enough to carry the larger glyphs, and Iris's note was
+       explicit that the prior 2.625rem max read as "polite". */
+    font-size: clamp(2.625rem, 7vw, var(--fs-3xl));
+    max-width: var(--measure);
+  }
+
+  /* Single top rule on the page-header — no closing rule below the title.
+     The page-header therefore doesn't share an edge with the first <h2>;
+     the first section is unambiguously beneath, not swallowed inside.
+     Both sides anchored via `left` + `right` (same math as the article
+     rule above, plus `--gutter` because the page-header bleeds out by
+     `-var(--gutter)` from the article). */
+  .page.has-grid .page-header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: calc(var(--gutter) - var(--asymm-left));
+    right: calc(var(--gutter) - var(--asymm-right));
+    height: 1px;
+    background: var(--color-rule);
+    pointer-events: none;
+  }
+
+  /* Prose no longer caps its own width — individual blocks do, so the h2
+     can grow to its parent's width and its centered pseudo aligns with the
+     viewport. */
+  .page.has-grid .prose {
+    max-width: none;
+  }
+
+  /*
+   * Body content cap. On gridded pages the central panel grows wide enough
+   * that uncapped body content would lose Bringhurst's reading measure
+   * (65–72 chars per line). Every body-level element that reads as part of
+   * the article's argument — prose, lists, quotes, sub-headings, code
+   * blocks, display math, horizontal rules — caps at --measure so the
+   * whole body-flow column aligns on its right edge. Elements that need
+   * to bleed wider (figures with .bleed-*, tables, page-header, h2 rules)
+   * opt out via their own selectors. */
+  .page.has-grid .prose :global(p),
+  .page.has-grid .prose :global(ul),
+  .page.has-grid .prose :global(ol),
+  .page.has-grid .prose :global(blockquote),
+  .page.has-grid .prose :global(h3),
+  .page.has-grid .prose :global(h4),
+  .page.has-grid .prose :global(pre),
+  .page.has-grid .prose :global(.katex-display),
+  .page.has-grid .prose :global(hr) {
+    max-width: var(--measure);
+  }
+
+  .page.has-grid .prose :global(h2) {
+    position: relative;
+    margin-left: calc(-1 * var(--gutter));
+    margin-right: calc(-1 * var(--gutter));
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+  }
+
+  /* Every h2 in the gridded variant gets a 100vw top rule via pseudo —
+     including the first. Iris/Crouwel: every section is the same kind of
+     object. The first h2's :first-child base override (padding-top: 0)
+     is restored below so the section rhythm matches its siblings. */
+  .page.has-grid .prose :global(h2) {
+    border-top: 0;
+  }
+
+  .page.has-grid .prose :global(h2)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: calc(var(--gutter) - var(--asymm-left));
+    right: calc(var(--gutter) - var(--asymm-right));
+    height: 1px;
+    background: var(--color-rule);
+    pointer-events: none;
+  }
+
+  /* Restore section padding-top on the first h2 (base prose rule zeros it
+     via :first-child). Iris's smaller-call #2: --space-8 lets the full-
+     viewport rules breathe as page events. The :first-child branch is
+     explicit because the base override has higher specificity than a plain
+     .has-grid .prose h2 selector would carry. */
+  .page.has-grid .prose :global(h2),
+  .page.has-grid .prose :global(h2:first-child) {
+    padding-top: var(--space-8);
+  }
+
+  /*
+   * Colophon strip — gives Plex Mono a third structural job (eyebrow,
+   * footer metadata, and now this) so it reads as a voice in the system
+   * rather than as garnish. Sits at the end of the article, bleeds to
+   * the article's outer box so its rule reads as a grid event.
+   */
+  /*
+   * Colophon — the trailing register at the end of an article.
+   *
+   * The colophon is a SYSTEM, not a single block. It supports two
+   * coexisting patterns inside the .colophon wrapper:
+   *
+   *   1. Simple slots (<p>...</p>)
+   *      Single-line statements where the role is implicit. /about
+   *      uses this pattern: "Set in Inter, Source Serif 4 & IBM Plex
+   *      Mono." reads on its own without a label.
+   *
+   *   2. Structured slots (<dl><div><dt>...</dt><dd>...</dd></div></dl>)
+   *      Key-value pairs for trailing metadata that needs a label:
+   *      attribution, citation, dates, references, license, DOI. The
+   *      label sits in a narrow left column (mono uppercase tracked,
+   *      --fs-xs, primary text); the value sits to its right (mono
+   *      --fs-sm, secondary text). Future essays will use this pattern
+   *      to carry the publication apparatus.
+   *
+   * Iris (v2): the previous one-class flat colophon shared the eyebrow's
+   * exact signature, conflating LABEL with READ. The split below — base
+   * register is read (sans-case mono); structured-slot labels are FLAGS
+   * (mono uppercase tracked) — restores the distinction.
+   *
+   * Iris (v3): no top rule on the .colophon container; --space-16 above
+   * is enough to mark it as a trailing note. The dl pattern does its own
+   * structural work via the grid columns.
+   */
+
+  /* Container base — applies to either pattern. */
+  .prose :global(.colophon) {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    color: var(--color-text-secondary);
+    margin-top: var(--space-16);
+    max-width: var(--measure);
+  }
+
+  /* Simple slot pattern. */
+  .prose :global(.colophon p) {
+    margin: 0 0 var(--space-2);
+  }
+
+  .prose :global(.colophon p:last-child) {
+    margin-bottom: 0;
+  }
+
+  /* Structured slot pattern — definition list with label/value columns.
+     Multiple <dl> elements can sit inside a .colophon, each representing
+     a typographic-break cluster (Iris v5 #4: attribution / technical /
+     dates / rights). Inter-cluster gap is wider than intra-cluster row
+     gap, so the clusters read as grouped fields rather than as a flat
+     web-form. */
+  .prose :global(.colophon dl) {
+    display: grid;
+    grid-template-columns: minmax(6rem, max-content) 1fr;
+    column-gap: var(--space-6);
+    row-gap: var(--space-2);
+    /* align-items: baseline shares the dt and dd baselines within each
+       row, so the smaller-cap dt sits visually aligned with the dd's
+       x-height without manual padding correction (which broke when dd
+       wrapped to multiple lines). */
+    align-items: baseline;
+    margin: 0;
+  }
+
+  /* Inter-cluster break — visible step between dl groups. */
+  .prose :global(.colophon dl + dl) {
+    margin-top: var(--space-5);
+  }
+
+  /* Each <div> child of dl groups a dt+dd pair AND becomes a grid row;
+     `display: contents` lets the dt and dd participate in the dl's grid
+     directly without the div introducing its own box. */
+  .prose :global(.colophon dl > div) {
+    display: contents;
+  }
+
+  .prose :global(.colophon dt) {
+    font-size: var(--fs-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-text);
+  }
+
+  .prose :global(.colophon dd) {
+    margin: 0;
+  }
+
+  /*
+   * Content-insertion paradigms for the decentered grid.
+   *
+   * Five classes, in two groups:
+   *
+   * --- Crossing bleeds (sit ON the grid; occlude pillars where they cross) ---
+   *
+   *   .bleed-full   spans viewport-left to viewport-right
+   *                 (panel-1 + panel-2 + panel-3)
+   *
+   *   .bleed-right  anchored at viewport-right, extends leftward into the
+   *                 central panel by --bleed-fraction of its width
+   *                 (panel-3 + rightmost --bleed-fraction of panel-2)
+   *
+   *   .bleed-left   mirror of .bleed-right
+   *                 (panel-1 + leftmost --bleed-fraction of panel-2)
+   *
+   * --- Margin bleeds (sit BESIDE the grid; don't cross pillars) ---
+   *
+   *   .bleed-margin-right  entirely inside panel-3
+   *   .bleed-margin-left   entirely inside panel-1
+   *
+   *   Marginalia register — Tufte/Lutz/Dumbar sidenote primitive. Set in
+   *   a smaller, secondary type so the body remains primary.
+   *
+   * --- Configuration ---
+   *
+   *   --bleed-fraction  How far .bleed-right / .bleed-left intrude into
+   *                     the central panel, as a fraction of --asymm-center.
+   *                     Default: 1/3. Override per-element via
+   *                     `style="--bleed-fraction: 0.5"` for half-width,
+   *                     `0.66` for two-thirds, etc.
+   *
+   * All five live inside .prose. They use negative-margin bleeds to
+   * escape the article's gutter and the asymmetric panel widths, and
+   * override the body-text measure cap. Block-level: each paradigm
+   * interrupts the prose flow vertically.
+   *
+   * Gridded-only: the central-panel geometry is only defined when
+   * --asymm-left / --asymm-right / --asymm-center are scoped, which
+   * happens on .page.has-grid.
+   */
+
+  /* Shared structural properties — all five paradigms. */
+  .page.has-grid .prose :global(.bleed-full),
+  .page.has-grid .prose :global(.bleed-right),
+  .page.has-grid .prose :global(.bleed-left),
+  .page.has-grid .prose :global(.bleed-margin-right),
+  .page.has-grid .prose :global(.bleed-margin-left) {
+    margin-top: var(--space-10);
+    margin-bottom: var(--space-10);
+    max-width: none;
+    position: relative;
+  }
+
+  /* Crossing bleeds: occlude the pillars they sit on. Solid background
+     hides the pillar inside the figure's bounding box (including the
+     transparent gaps between dots/strokes in SVG patterns); z-index
+     lifts the figure above the pillars' z-index: 0. Editorially:
+     a figure that crosses a grid line interrupts the line at the
+     figure's extent. */
+  .page.has-grid .prose :global(.bleed-full),
+  .page.has-grid .prose :global(.bleed-right),
+  .page.has-grid .prose :global(.bleed-left) {
+    background: var(--color-bg);
+    z-index: 1;
+    --bleed-fraction: calc(1 / 3);
+  }
+
+  .page.has-grid .prose :global(.bleed-full) {
+    /* Span the viewport. Negative left margin escapes article padding +
+       panel-1; explicit 100vw width carries to viewport-right. */
+    margin-left: calc(-1 * (var(--gutter) + var(--asymm-left)));
+    width: 100vw;
+  }
+
+  .page.has-grid .prose :global(.bleed-right) {
+    /* Anchor at viewport-right. Negative right margin escapes article
+       padding + panel-3; margin-left: auto pushes the block right
+       against the viewport edge. */
+    margin-left: auto;
+    margin-right: calc(-1 * (var(--gutter) + var(--asymm-right)));
+    width: calc(var(--asymm-right) + var(--asymm-center) * var(--bleed-fraction));
+  }
+
+  .page.has-grid .prose :global(.bleed-left) {
+    margin-left: calc(-1 * (var(--gutter) + var(--asymm-left)));
+    width: calc(var(--asymm-left) + var(--asymm-center) * var(--bleed-fraction));
+  }
+
+  /* Margin bleeds: sit ENTIRELY within their side panel; the pillar is
+     their visual neighbor, not something they cross. No background +
+     z-index — the pillar should remain visible alongside as the boundary. */
+  .page.has-grid .prose :global(.bleed-margin-right) {
+    margin-left: auto;
+    margin-right: calc(-1 * (var(--gutter) + var(--asymm-right)));
+    width: var(--asymm-right);
+    padding: 0 var(--gutter);
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    color: var(--color-text-secondary);
+  }
+
+  .page.has-grid .prose :global(.bleed-margin-left) {
+    margin-left: calc(-1 * (var(--gutter) + var(--asymm-left)));
+    width: var(--asymm-left);
+    padding: 0 var(--gutter);
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    color: var(--color-text-secondary);
+  }
+
+  /* Paragraph rhythm inside margin bleeds — tighter than body. */
+  .page.has-grid .prose :global(.bleed-margin-right p),
+  .page.has-grid .prose :global(.bleed-margin-left p) {
+    margin: 0 0 var(--space-3);
+  }
+  .page.has-grid .prose :global(.bleed-margin-right p:last-child),
+  .page.has-grid .prose :global(.bleed-margin-left p:last-child) {
+    margin-bottom: 0;
+  }
+
+  /* SVG and img children fill their bleed container by default. */
+  .page.has-grid .prose :global(.bleed-full svg),
+  .page.has-grid .prose :global(.bleed-right svg),
+  .page.has-grid .prose :global(.bleed-left svg),
+  .page.has-grid .prose :global(.bleed-full img),
+  .page.has-grid .prose :global(.bleed-right img),
+  .page.has-grid .prose :global(.bleed-left img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Iris v5 figure consult: tall .bleed-right and .bleed-left figures leave
+     a long vertical void in the body column at the figure's extent — past
+     ~600px the silence reads as abandonment rather than breathing room.
+     A height cap on the SVG (~28rem on most viewports, smaller on short
+     viewports via 60vh) keeps the pause at a length the composition can
+     carry. preserveAspectRatio handles letterboxing if a portrait SVG's
+     intrinsic ratio would exceed the cap. */
+  .page.has-grid .prose :global(.bleed-right svg),
+  .page.has-grid .prose :global(.bleed-left svg),
+  .page.has-grid .prose :global(.bleed-right img),
+  .page.has-grid .prose :global(.bleed-left img) {
+    max-height: min(60vh, 28rem);
+  }
+
+  /*
+   * Figure apparatus — <figure> + <figcaption>.
+   *
+   * The figure element is layout-agnostic: it can sit inline at body
+   * measure, or be combined with a .bleed-* class to position it across
+   * panels. The figcaption is a separate typographic register (sans,
+   * --fs-sm, secondary color) with an auto-numbered mono label.
+   *
+   * Numbering — the counter increments on figcaption (not figure) so
+   * figures without captions don't create gaps in the sequence. A figure
+   * without a caption is unindexed; one with a caption gets the next
+   * available number. Counter scope: per article.
+   *
+   * Caption placement splits by figure variant:
+   *   - Inline (no bleed class): caption stacks below the SVG in normal
+   *     flow, capped at --measure, aligned to figure's left edge.
+   *   - .bleed-full and the margin-bleed variants: same stacked pattern.
+   *   - .bleed-right and .bleed-left: caption is absolutely positioned
+   *     OUTSIDE the figure box, bottom-aligned with the figure, sitting
+   *     in the body-column's empty band at the figure's vertical extent.
+   *     See the EXPERIMENT v2 block further down.
+   */
+  .page.has-grid .prose {
+    counter-reset: figure;
+  }
+
+  /* Top rule of the figure bracket. For inline / .bleed-full / margin-bleed
+     variants, the bottom rule is the figcaption's border-top (below). For
+     .bleed-right / .bleed-left, the bottom rule is the figure's own
+     border-bottom (set in the EXPERIMENT v2 block) because the figcaption
+     has been pulled out of the figure's flow. Convention either way:
+     same rule vocabulary as the page-header and h2 — declared by lines. */
+  .page.has-grid .prose :global(figure) {
+    margin-top: var(--space-10);
+    margin-bottom: var(--space-10);
+    border-top: 1px solid var(--color-rule);
+    padding-top: var(--space-3);
+  }
+
+  /* Inline figures (no .bleed-* class) sit at body measure. The bleed
+     classes override this via their higher-specificity selectors. */
+  .page.has-grid .prose :global(figure:not([class*="bleed-"])) {
+    max-width: var(--measure);
+  }
+
+  .page.has-grid .prose :global(figure svg),
+  .page.has-grid .prose :global(figure img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /*
+   * Figure ink. Iris (v4): figures inheriting prose color (--color-text)
+   * via currentColor invert the perceptual contrast between light and
+   * dark modes — black-on-cream reads "harder" than off-white-on-near-
+   * black at the same nominal contrast ratio. Pulling from a plot token
+   * gives figures their own semantic color line, theme-tuned for
+   * visualization rather than reading.
+   *
+   * The default is --plot-graphite (a neutral gray from the series,
+   * tuned for both themes in tokens.css). Figures with more structure
+   * (axis lines + data points + labels) should set finer-grained tokens
+   * on SVG elements directly — `fill="var(--plot-series-1)"`,
+   * `stroke="var(--plot-axis)"`, etc. — rather than rely on the inherited
+   * color alone.
+   */
+  .page.has-grid .prose :global(figure svg) {
+    color: var(--plot-graphite);
+  }
+
+  .page.has-grid .prose :global(figcaption) {
+    counter-increment: figure;
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    color: var(--color-text-secondary);
+    max-width: var(--measure);
+    /* Default stacked-caption pattern. The figcaption's border-top is
+       the figure's bottom rule for inline / .bleed-full / margin-bleed
+       variants. Symmetric spacing above and below the rule: --space-3
+       gap between SVG and rule (margin-top), --space-3 gap between rule
+       and caption text (padding-top). Matches the figure's top rule.
+       .bleed-right and .bleed-left override these values (border-top: 0,
+       margin-top: 0, padding-top: 0) because their captions are pulled
+       out of the figure's flow — see the EXPERIMENT v2 block below. */
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .page.has-grid .prose :global(figcaption)::before {
+    content: "Fig. " counter(figure) " · ";
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text);
+  }
+
+  /*
+   * The central-panel-side vertical rule of the bleed-right/left bracket.
+   * Combined with the figure's top rule (above) and bottom rule (added in
+   * the EXPERIMENT v2 block below), this closes the cantilevered figure
+   * into a three-sided bounded region. The fourth side is defined by the
+   * viewport edge the figure is anchored to — the figure reads as
+   * "hinged to the edge" rather than "contained inside the page" (Iris
+   * v6: this is a margin bracket, not a frame).
+   *
+   * Padding on the central-panel side keeps the SVG glyphs from touching
+   * the vertical rule — "aligned with" not "kissing."
+   */
+  .page.has-grid .prose :global(.bleed-right) {
+    border-left: 1px solid var(--color-rule);
+    padding-left: var(--space-3);
+  }
+
+  .page.has-grid .prose :global(.bleed-left) {
+    border-right: 1px solid var(--color-rule);
+    padding-right: var(--space-3);
+  }
+
+  /*
+   * EXPERIMENT v2 (2026-05-12): caption OUTSIDE the figure box.
+   *
+   * The SVG fills the full bleed-extent (back to canonical) inside the
+   * three-sided bracket. The figure adds a border-bottom so the bracket
+   * closes without relying on figcaption (which is no longer below the
+   * SVG). The figcaption is absolutely positioned to the LEFT of the
+   * .bleed-right figure (RIGHT of .bleed-left), bottom-aligned with the
+   * figure's bottom edge, filling part of the body-column's empty band
+   * at the figure's vertical extent.
+   *
+   * Caption width = cantilever (--asymm-center * --bleed-fraction). The
+   * caption scales with the bleed: more cantilever → wider caption box.
+   * Padding on the figure-facing side keeps the text from kissing the
+   * figure's bracket. Other figcaption styling (border-top, margin-top,
+   * padding-top from the stacked-layout convention) is reset because
+   * the caption is no longer below the SVG.
+   */
+  .page.has-grid .prose :global(.bleed-right),
+  .page.has-grid .prose :global(.bleed-left) {
+    border-bottom: 1px solid var(--color-rule);
+    padding-bottom: var(--space-3);
+    /* Standardized caption width. Decoupled from --bleed-fraction so that
+       a figure at fraction 0.5 doesn't end up with a wider caption box
+       than one at fraction 1/3. Default tracks the canonical 1/3 cantilever
+       width (asymm-center / 3) so captions still scale with the layout but
+       stay consistent across figures. Override per-element via
+       `style="--caption-width: 18rem"` if a figure needs a different box. */
+    --caption-width: calc(var(--asymm-center) / 3);
+  }
+
+  .page.has-grid .prose :global(.bleed-right > figcaption) {
+    position: absolute;
+    bottom: 0;
+    right: 100%;
+    width: var(--caption-width);
+    padding-right: var(--space-3);
+    max-width: none;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .page.has-grid .prose :global(.bleed-left > figcaption) {
+    position: absolute;
+    bottom: 0;
+    left: 100%;
+    width: var(--caption-width);
+    padding-left: var(--space-3);
+    max-width: none;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
   .page-header {
     border-bottom: var(--rule);
     padding-bottom: var(--space-8);
     margin-bottom: var(--space-12);
   }
 
-  .page-header-inner {
-    display: grid;
-    gap: var(--space-3);
-  }
-
+  /*
+   * Eyebrow — section/page label above the title. Available to any page
+   * using PageLayout via the `eyebrow` frontmatter field. On gridded pages
+   * the eyebrow is intentionally NOT rendered (gridded pages declare
+   * `gridded: true` and skip the eyebrow): Iris v3/v5 — the row's right
+   * terminus has no site-wide structural occupant, so a row with an empty
+   * right half on the decentered composition stacks two voids and the
+   * page reads as "waiting for something." Gridded pages use the
+   * page-header's top rule for the upper-frame work instead. Non-gridded
+   * pages (e.g. /colophon) continue to render their eyebrow normally.
+   */
   .eyebrow {
+    margin: 0 0 var(--space-4);
     font-family: var(--font-mono);
     font-size: var(--fs-xs);
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    color: var(--color-accent-strong);
+    color: var(--color-text-secondary);
+  }
+
+  .page.has-grid .eyebrow {
+    display: none;
   }
 
   .page-title {
@@ -72,10 +689,15 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
   }
 
   .prose :global(h2) {
+    /* Iris (v4): the h2 step needs to match the architectural step that
+       the full-viewport rule announces. fs-lg (22px) murmured against
+       the rule; fs-xl (30px) reads as a section header at the right
+       weight for a publication system. Negative tracking is reserved
+       for display scale — at 30px Inter, neutral tracking holds. */
     font-family: var(--font-sans);
-    font-size: var(--fs-lg);
+    font-size: var(--fs-xl);
     font-weight: 600;
-    letter-spacing: -0.01em;
+    letter-spacing: 0;
     margin-top: var(--space-12);
     margin-bottom: var(--space-4);
     padding-top: var(--space-6);
@@ -89,15 +711,17 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
   }
 
   .prose :global(h3) {
+    /* Iris: h3 was uppercase + tracked + secondary-color — a label, not a
+       heading. Recast as a continuation of the body argument (Hofmann):
+       same sans family, slight weight lift, primary text color, no
+       typewriter affectation. */
     font-family: var(--font-sans);
-    font-size: var(--fs-base);
+    font-size: var(--fs-md);
     font-weight: 600;
-    letter-spacing: 0;
+    letter-spacing: -0.005em;
     margin-top: var(--space-8);
     margin-bottom: var(--space-3);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-text-secondary);
+    color: var(--color-text);
   }
 
   .prose :global(p) {
@@ -128,11 +752,156 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
   }
 
   .prose :global(blockquote) {
-    border-left: 2px solid var(--color-accent);
+    border-left: 2px solid var(--color-text);
     padding-left: var(--space-4);
     color: var(--color-text-secondary);
     font-style: italic;
     margin: var(--space-6) 0;
+  }
+
+  /* Pull-quote — a distinct DISPLAY register, not the inline-quotation
+     register of blockquote. Borderless, larger serif, italic, with a
+     mono attribution. Use as <blockquote class="pull-quote">. */
+  .prose :global(blockquote.pull-quote) {
+    border-left: 0;
+    padding-left: 0;
+    margin: var(--space-12) 0;
+    font-family: var(--font-serif);
+    font-size: var(--fs-lg);
+    font-style: italic;
+    font-weight: 400;
+    line-height: var(--lh-snug);
+    color: var(--color-text);
+    max-width: var(--measure);
+  }
+
+  .prose :global(blockquote.pull-quote cite) {
+    display: block;
+    margin-top: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-style: normal;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+  }
+
+  /* Editorial table — heavier horizontal rules above and below the table
+     (a top and a tail bar in the publication tradition), 1px row dividers,
+     no vertical lines. Headers in mono small-caps; cells in body sans. */
+  .prose :global(table) {
+    width: 100%;
+    max-width: var(--measure);
+    border-collapse: collapse;
+    margin: var(--space-8) 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-base);
+    line-height: var(--lh-base);
+  }
+
+  /* Iris v5 #8: the heavy 2px top/tail bars previously used --color-text
+     read as UI lines in dark mode (off-white 2px against #121212). Stepped
+     down to --color-text-secondary so the bar remains a structural marker
+     in both themes without dominating the dark canvas. */
+  .prose :global(thead) {
+    border-top: 2px solid var(--color-text-secondary);
+    border-bottom: var(--rule);
+  }
+
+  .prose :global(tbody) {
+    border-bottom: 2px solid var(--color-text-secondary);
+  }
+
+  .prose :global(tr) {
+    border-bottom: var(--rule);
+  }
+
+  .prose :global(tbody tr:last-child) {
+    border-bottom: 0;
+  }
+
+  .prose :global(th),
+  .prose :global(td) {
+    padding: var(--space-3) var(--space-4) var(--space-3) 0;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .prose :global(th:last-child),
+  .prose :global(td:last-child) {
+    padding-right: 0;
+  }
+
+  .prose :global(th) {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text);
+  }
+
+  /* Right-align numeric columns via the `numeric` class on th/td. */
+  .prose :global(.numeric) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Footnotes — inline marker (superscript) + footnote list at end of
+     article. The list is the last register before the colophon. */
+  .prose :global(sup) {
+    font-size: 0.7em;
+    line-height: 0;
+    vertical-align: 0.5em;
+  }
+
+  .prose :global(sup a) {
+    color: var(--color-text);
+    border-bottom: 0;
+    font-family: var(--font-mono);
+  }
+
+  .prose :global(.footnotes) {
+    margin-top: var(--space-16);
+    padding-top: var(--space-4);
+    border-top: var(--rule);
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    color: var(--color-text-secondary);
+    max-width: var(--measure);
+    list-style: none;
+    padding-left: 0;
+    counter-reset: footnote;
+  }
+
+  .prose :global(.footnotes li) {
+    counter-increment: footnote;
+    position: relative;
+    padding-left: var(--space-8);
+    margin-bottom: var(--space-3);
+  }
+
+  .prose :global(.footnotes li::before) {
+    content: counter(footnote);
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.14em;
+    color: var(--color-text);
+  }
+
+  /* Iris v5 #5: footnote return-marker (↩) was inheriting the prose link
+     border-bottom, reading as a UI affordance instead of a typographic
+     mark. Targeted by href prefix (back-links go to #fnref-*) so no
+     markup change is needed. Mono register matches the forward marker
+     in the body. */
+  .prose :global(.footnotes a[href^="#fnref"]) {
+    border-bottom: 0;
+    font-family: var(--font-mono);
+    color: var(--color-text);
   }
 
   .prose :global(hr) {
@@ -141,8 +910,144 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
     margin: var(--space-12) 0;
   }
 
-  .prose :global(a) {
-    color: var(--color-accent-strong);
-    border-bottom-color: var(--color-rule);
+</style>
+
+<style is:global>
+  /*
+   * Panel-width tokens for the gridded variant. Defined on `main:has(.has-grid)`
+   * so they cascade to all descendants (article, page-header, h2s, bleeds)
+   * AND remain available to main's own pillar pseudos. Single source of
+   * geometry truth — changing the breakpoint or the cap touches one place.
+   *
+   * Defaults (any viewport): centered v2 layout — both side panels equal
+   * to `(100vw - --measure-wide) / 2`. Used below the intermediate
+   * breakpoint where the asymmetric grid can't carry its weight (Iris v4 #7).
+   *
+   * Above 1100px: switch to the decentered three-panel composition.
+   * Panel-1 is half of panel-3 (the canonical 1:2 ratio), and both are
+   * capped (10rem / 20rem) so the right field doesn't grow to >570px on
+   * very wide viewports where it would read as unused capacity rather
+   * than reserved capacity.
+   */
+  main:has(.has-grid) {
+    --asymm-left: max(0px, calc((100vw - var(--measure-wide)) / 2));
+    --asymm-right: max(0px, calc((100vw - var(--measure-wide)) / 2));
+    --asymm-center: calc(100vw - var(--asymm-left) - var(--asymm-right));
+    position: relative;
+  }
+
+  @media (min-width: 1100px) {
+    main:has(.has-grid) {
+      --asymm-left: min(10rem, max(0px, calc((100vw - var(--measure-wide)) / 4)));
+      --asymm-right: min(20rem, max(0px, calc((100vw - var(--measure-wide)) / 2)));
+    }
+  }
+
+  /*
+   * Vertical pillars. Mounted on <main> (not <body>) so they span only
+   * the content region between the site header and footer — main is
+   * `flex: 1 0 auto` inside the body's flex column, which means top: 0
+   * / bottom: 0 on these pseudos lands exactly at main's edges.
+   *
+   * Each pillar's x sits at the boundary between a side panel and the
+   * central panel, pulled directly from the cascaded asymm tokens.
+   */
+  main:has(.has-grid)::before,
+  main:has(.has-grid)::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--color-rule);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  main:has(.has-grid)::before {
+    left: var(--asymm-left);
+  }
+
+  main:has(.has-grid)::after {
+    right: var(--asymm-right);
+  }
+
+  /*
+   * On gridded pages only, move the footer's top breathing room from its own
+   * margin into <main>'s padding-bottom. Same total spacing as elsewhere, but
+   * the gap now lives inside main, so the pillars span it and meet the
+   * footer's border-top right where it's always sat — directly above the
+   * footer text.
+   */
+  main:has(.has-grid) {
+    padding-bottom: var(--space-24);
+  }
+
+  body:has(.has-grid) .site-footer {
+    margin-top: 0;
+  }
+
+  /*
+   * Print. The site is built for screen — `100vw` math, position-absolute
+   * pillars, viewport-anchored horizontal rules, and asymmetric bleed
+   * paradigms are all meaningful only on screen. Print flattens to a
+   * centered single column with body text + figures, drops the decorative
+   * grid chrome, and forces a light-on-white theme so dark-mode users
+   * print with sane contrast. See `docs/design-system.md` for the stance.
+   */
+  @media print {
+    :root,
+    [data-theme="dark"] {
+      --color-bg: #ffffff;
+      --color-text: #000000;
+      --color-text-secondary: #444444;
+      --color-rule: #999999;
+    }
+
+    /* Collapse the asymmetric grid to a centered single column. */
+    main:has(.has-grid) {
+      --asymm-left: 0px;
+      --asymm-right: 0px;
+      --asymm-center: 100%;
+    }
+
+    /* Drop the decorative grid chrome — pillars and 100vw rules are
+       viewport constructs that don't carry on paper. */
+    main:has(.has-grid)::before,
+    main:has(.has-grid)::after,
+    .page.has-grid::before,
+    .page.has-grid::after,
+    .page.has-grid .page-header::after,
+    .page.has-grid .prose h2::before {
+      display: none;
+    }
+
+    /* Restore a standard h2 border so sections still divide. */
+    .page.has-grid .prose h2 {
+      border-top: var(--rule);
+    }
+    .page.has-grid .prose h2:first-child {
+      border-top: 0;
+    }
+
+    /* Collapse bleed paradigms to inline blocks at body measure. */
+    .page.has-grid .prose .bleed-full,
+    .page.has-grid .prose .bleed-right,
+    .page.has-grid .prose .bleed-left,
+    .page.has-grid .prose .bleed-margin-right,
+    .page.has-grid .prose .bleed-margin-left {
+      margin-left: 0;
+      margin-right: 0;
+      width: auto;
+      max-width: 100%;
+      background: transparent;
+    }
+
+    /* Hide site chrome (nav and footer). */
+    .site-header,
+    .site-footer {
+      display: none;
+    }
   }
 </style>
+

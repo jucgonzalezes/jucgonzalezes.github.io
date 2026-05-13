@@ -51,6 +51,14 @@ Typography is self-hosted via **Fontsource**. No external font CDN is used.
 
 The site is deployed as a static build to **GitHub Pages** via **GitHub Actions**.
 
+## Disclaimer: AI usage
+
+All text and visual contents on this site are written by me. The design system (typography, grid, color, composition, interaction) has been carefully designed and refined according to my own principles, through deliberate iteration. The implementation, however, including the CSS, the Astro components, and the build configuration, is largely written by [Claude](https://claude.com).
+
+AI is not the brain and heart of this motor, it is the hands that make its existence possible.
+
+Contents and the designs are my own.
+
 ## Ongoing construction
 
 This website is intentionally unfinished. It evolves incrementally through writing, experimentation, tooling, visual systems, and research interests that change over time.

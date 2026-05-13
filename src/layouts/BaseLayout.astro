@@ -1,5 +1,9 @@
 ---
 import '../styles/global.css';
+// KaTeX stylesheet — required for math markup rendered by rehype-katex
+// at build time. Loaded site-wide so any page can include $...$ or
+// $$...$$ math without per-page imports.
+import 'katex/dist/katex.min.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 

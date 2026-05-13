@@ -90,6 +90,13 @@
   --measure-wide: 48rem;
   --gutter: var(--space-6);
 
+  /* Vertical padding for "framed header" boxes (an h1 / section title
+     bounded by horizontal grid lines). Off the geometric --space-N scale
+     by design — the eyeballed value lands between --space-5 and --space-6.
+     Use this token anywhere a heading should sit centered between two
+     bounding grid lines so the spacing rhythm stays uniform. */
+  --frame-pad-y: 1.35rem;
+
   /* ---------- Rules ---------- */
   --rule: 1px solid var(--color-rule);
   --rule-strong: 2px solid var(--color-text);
