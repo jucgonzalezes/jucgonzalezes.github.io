@@ -26,3 +26,4 @@ pnpm-debug.log*
 
 # project guidance (kept local, not published)
 CLAUDE.md
+.claude/

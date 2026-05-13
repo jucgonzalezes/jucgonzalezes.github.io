@@ -130,6 +130,24 @@ Gridded pages declare a framed page-header. The pattern:
 - **No intersection dots.** Corners and T-intersections are clean line crossings.
 - **All lines use `var(--color-rule)`**, adapting automatically in dark mode.
 
+## Poster Compositions
+
+A second page register exists alongside the framed page pattern: the **poster**. Where framed pages are continuous editorial articles built from a page-header + prose + sections, posters are single-event compositions that read as one typographic object. The 404 page (`src/pages/404.astro`) is the first instance.
+
+The poster pattern:
+
+- **Bypasses `PageLayout`.** Renders directly inside `BaseLayout`. The page-header / eyebrow / prose-column apparatus does not apply. The composition IS the page.
+- **One typographic event.** A single oversized word or numeral, set at one scale and one weight. Compositional variation comes from placement on a virtual 12-column grid, not from varying size across glyphs.
+- **Asymmetric placement.** The typographic mass hangs from one quadrant (upper-left for /404); voice and navigation settle into the opposite area. Vertical placement is intentionally off-center so the composition reads as architectural rather than monumental.
+- **One full-viewport hairline.** A single 1px rule at `var(--color-rule)` anchors the composition. For /404 the line sits at the numerals' baseline and tethers the typographic mass to the voice block. Additional rules at the same weight would compete with the signature line, so the per-row link-table underlines stay close to that visual register and are tuned to coexist with the master hairline rather than echo it.
+- **Monochromatic.** Editorial accent is not used. Posters share the content-page colour rule.
+- **`<main>` becomes a flex column** on a poster page via `:global(main:has(.error)) { display: flex; flex-direction: column }`, with the section claiming `flex: 1`. This lets the composition fill the space between header and footer without hand-calculated `min-height: calc(100vh - <chrome>)` math, which breaks when the footer wraps or its margin changes.
+- **Display numeral spec** (the `404`): Inter weight 700, `clamp(9rem, 22vw, 17rem)`, `letter-spacing: -0.04em`, `line-height: 0.85`, `font-variant-numeric: lining-nums tabular-nums`. The `tabular-nums` flag is load-bearing at display size: without it the proportional widths read as casually set rather than architectural.
+- **Grid centering with breathing rows.** The section uses a row template of the form `2fr auto auto auto 1fr auto 1fr` to (1) keep the numerals above vertical centre via the leading `2fr`, (2) hang the paragraph from the hairline, and (3) centre the link table in the silence below the paragraph with equal `1fr` rows above and below. The centring is geometric relative to the section's box; the visible footer line sits below the section by the footer's `margin-top`, so the table reads as slightly higher than midway-to-footer by that margin.
+- **Responsive collapse below 1100px.** All composition pieces stack flush left in document order; tracking on the numerals eases from `-0.04em` to `-0.03em` below 600px. Asymmetric placement is not preserved at narrow widths — it would read as broken.
+
+Future poster pages (essay covers, exhibition entries, error states beyond 404) should reuse this register: one event, one hairline, monochrome, asymmetric placement, no `PageLayout` apparatus.
+
 ## Bleed Paradigms
 
 Five classes define how content interrupts or coexists with the body column. All five are scoped to `.has-grid`.
