@@ -919,6 +919,25 @@ const fullTitle = `${frontmatter.title} · Juan C. Gonzalez`;
     font-variant-numeric: tabular-nums;
   }
 
+  /* Palette specimen: thin swatch bands in the first column of `.palette`
+     tables. The swatch references the actual --color-* / --plot-* tokens
+     so it shows the active theme's value, which is the honest read for a
+     theme-aware system. A 1px rule of --color-rule lets near-paper
+     neutrals (background, elevated surface) read as bands rather than
+     disappearing into the page background. Cells in palette tables
+     vertically center so the swatch and the text rows align. */
+  .prose :global(.palette th),
+  .prose :global(.palette td) {
+    vertical-align: middle;
+  }
+  .prose :global(.swatch) {
+    display: inline-block;
+    width: 2.5rem;
+    height: 1.1rem;
+    border: 1px solid var(--color-rule);
+    vertical-align: middle;
+  }
+
   /* Footnotes: inline marker (superscript) + footnote list at end of
      article. The list is the last register before the colophon. */
   .prose :global(sup) {

@@ -5,10 +5,7 @@ description: About the author and this site.
 gridded: true
 ---
 
-This website is my personal lab for ideas in progress,
-technical notes, visual systems, and ongoing projects. It serves as a place to explore
-new technologies, document experiments, and share thoughts and learnings related to
-**mathematics, physics, and computing**.
+This site is my personal lab for ideas in progress, technical notes, visual systems, and ongoing projects. I use it to explore new technologies, document experiments, and share thoughts and learnings related to **mathematics, physics, and computing**.
 
 The design behind this site is documented in its own [design system](/design-system) page.
 
@@ -19,18 +16,19 @@ Unless otherwise stated, all content is my own.
 <figure class="figure-float-right">
 <img src="/images/portrait.png" alt="Portrait of Juan C. Gonzalez" loading="lazy" />
 </figure>
-Juan C. Gonzalez is a designer and engineer working at the intersection of computational systems, scientific visualization, and editorial design. He writes about generative methods, simulation-driven inquiry, and the visual grammar of technical work.
 
-His practice moves between disciplines that are usually kept apart: typography and physics, publishing and programming, drawing and inference. The throughline is an interest in how technical material can be set, paced, and composed without losing the precision that made it worth writing down.
+I'm a physicist and mathematical engineer working at the intersection of artificial intelligence, high-performance computing, and quantum computing applied to interdisciplinary problems. My work lives between research, industry, and consulting. I've worked as a data scientist at **Accenture Song** (formerly Accenture Interactive), a research intern at **IBM**, and a consultant at **Protiviti**. My research thread runs through cavity quantum electrodynamics, quantum computing, optimization, and Bayesian statistics.
 
-This site is the working archive of that practice. Long-form essays, working notes, simulations, and visual experiments, all held to the same editorial standards as the writing.
+I'm deeply interested in multimodal foundation models and how they can be applied to areas like quantum simulation, diffusion models, and recommendation systems. I'm also drawn to the engineering side of working at that scale, especially MLOps, parallel computing, and distributed training.
+
+Outside of research and engineering, I'm drawn to the more creative and human side of the practice: visual art, generative modelling, outreach, and the discipline of explaining technical work to readers who are not yet inside it.
 
 ### Areas of interest
 
-- _Computational design_: generative systems, simulation, formal grammars
-- _Editorial typography_: long-form readability, structural composition, the published page
-- _Scientific visualization_: diagrammatic clarity, theme-aware figures, integrated argument
-- _Research documentation_: the discipline of writing technical work that endures
+- _Quantum computing and simulation_: many-body physics and multimodal models applied to physical systems (especially fermion systems)
+- _Machine learning and foundation models_: diffusion models, recommendation engines, multimodal architectures, distributed training
+- _Computational mathematics_: Bayesian methods, high-performance and parallel computing, scientific visualization
+- _Generative art and outreach_: experimental visual arts and natural-media generation
 
 <div class="colophon">
 
