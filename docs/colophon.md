@@ -9,12 +9,14 @@ The site is intentionally transparent in both construction and philosophy.
 ## Editorial Philosophy
 
 The design prioritizes:
+
 - readability over novelty
 - hierarchy over decoration
 - structure over visual noise
 - and sustained attention over rapid consumption
 
 Every visual element is expected to contribute either:
+
 - informational clarity,
 - compositional balance,
 - or conceptual meaning.
@@ -44,6 +46,7 @@ The grid remains partially visible throughout the site as part of the visual lan
 Spacing and alignment are treated as compositional tools rather than invisible implementation details.
 
 The site intentionally favors:
+
 - asymmetrical balance
 - structural whitespace
 - modular composition
@@ -60,6 +63,7 @@ A full account of the grid, the bleed paradigms, the figure apparatus, and the s
 The visual palette is intentionally restrained.
 
 The interface primarily relies on:
+
 - warm paper-like neutrals
 - dark ink-like typography
 - and a limited range of accent tones inspired by scientific publishing and editorial print systems
@@ -80,6 +84,12 @@ Typography is self-hosted via Fontsource. No external font CDNs are used.
 Visualizations are rendered primarily in SVG and integrate with the surrounding theme through CSS variables. JavaScript is loaded only where a figure or simulation requires it.
 
 The site is deployed as a static build to GitHub Pages.
+
+## Disclaimer: AI usage
+
+All text content on this site is written by me. The design system (typography, grid, color, composition, interaction) is chosen and refined according to my own principles, through deliberate iteration. The implementation, however, including the CSS, the Astro components, and the build configuration, is largely written by [Claude](https://claude.com).
+
+AI is not the brain and heart of this motor, it is the hands that make its existence possible. Contents and the designs are my own.
 
 ## Ongoing Construction
 

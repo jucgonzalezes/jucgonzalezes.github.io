@@ -28,12 +28,12 @@ This site is the working archive of that practice — long-form essays, working 
 
 ### Areas of interest
 
-- *Computational design* — generative systems, simulation, formal grammars
-- *Editorial typography* — long-form readability, structural composition, the published page
-- *Scientific visualization* — diagrammatic clarity, theme-aware figures, integrated argument
-- *Research documentation* — the discipline of writing technical work that endures
+- _Computational design_ — generative systems, simulation, formal grammars
+- _Editorial typography_ — long-form readability, structural composition, the published page
+- _Scientific visualization_ — diagrammatic clarity, theme-aware figures, integrated argument
+- _Research documentation_ — the discipline of writing technical work that endures
 
-## About this site
+## This site
 
 The web has become increasingly frictionless, optimized for speed, engagement, and endless circulation. Information flows continuously, but very little feels constructed to endure. This space is a response to that condition.
 
