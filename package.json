@@ -1,7 +1,7 @@
 {
   "name": "home-site",
   "type": "module",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "Computational editorial publication and research notebook.",
   "scripts": {

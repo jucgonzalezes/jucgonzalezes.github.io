@@ -27,6 +27,62 @@ The h3 is Inter 600 at body scale, primary text color, sentence case. It reads a
 
 Spacing between h3 and the following paragraph is `--space-3` (0.75rem); spacing between paragraphs is `--space-5` (1.25rem). The visual step between an h3 and a paragraph below it is meaningful but small: the h3 introduces a sub-argument rather than starting a new section.
 
+## Color
+
+The palette is a three-band system. A warm neutral set for the editorial surface, a single ochre accent reserved for narrow uses, and a separate visualization series for figures. All tokens are theme-aware: each name has a light value (the cream-surface mode) and a dark value (the computational-observatory mode). The swatches below render in whichever mode is currently active; the hex column lists the light value.
+
+### Editorial neutrals
+
+The page lives on a warm paper neutral. Type is near-black ink. Rules and borders sit at a quiet warm gray. The elevated surface is a slightly lighter paper used for inline code, pull-quote backgrounds, and other surfaces that need to lift off the page background by a hair.
+
+<table class="palette">
+<thead>
+<tr><th></th><th>Role</th><th>Token</th><th>Hex (light)</th></tr>
+</thead>
+<tbody>
+<tr><td><span class="swatch" style="background: var(--color-bg);"></span></td><td>Background</td><td><code>--color-bg</code></td><td><code>#F5F4F0</code></td></tr>
+<tr><td><span class="swatch" style="background: var(--color-surface);"></span></td><td>Elevated surface</td><td><code>--color-surface</code></td><td><code>#FAF9F6</code></td></tr>
+<tr><td><span class="swatch" style="background: var(--color-text);"></span></td><td>Primary text</td><td><code>--color-text</code></td><td><code>#111111</code></td></tr>
+<tr><td><span class="swatch" style="background: var(--color-text-secondary);"></span></td><td>Secondary text</td><td><code>--color-text-secondary</code></td><td><code>#5E5E59</code></td></tr>
+<tr><td><span class="swatch" style="background: var(--color-rule);"></span></td><td>Rule / border</td><td><code>--color-rule</code></td><td><code>#CFCBC3</code></td></tr>
+</tbody>
+</table>
+
+### Editorial accent
+
+The ochre family is the only colour on content pages, and even there it is reserved for narrow uses: landing-page chrome (eyebrow, pager dots, progress bar), interaction states (link hover, focus outline), and the `<mark>` register. The discipline is editorial: the page's load-bearing thesis phrase, at the lead, marked once. Adding accent elsewhere requires explicit design intent.
+
+<table class="palette">
+<thead>
+<tr><th></th><th>Role</th><th>Token</th><th>Hex (light)</th></tr>
+</thead>
+<tbody>
+<tr><td><span class="swatch" style="background: var(--color-accent);"></span></td><td>Primary ochre</td><td><code>--color-accent</code></td><td><code>#D8A632</code></td></tr>
+<tr><td><span class="swatch" style="background: var(--color-accent-strong);"></span></td><td>Strong ochre</td><td><code>--color-accent-strong</code></td><td><code>#B7861E</code></td></tr>
+<tr><td><span class="swatch" style="background: var(--color-accent-soft);"></span></td><td>Soft highlight</td><td><code>--color-accent-soft</code></td><td><code>#E7C46A</code></td></tr>
+</tbody>
+</table>
+
+### Visualization series
+
+An eight-tone palette for figures, distinct from the editorial accent system. Tones are muted by design: publication-grade rather than dashboard-bright. Each raw token maps to a semantic plot token (`--plot-series-1` through `--plot-series-8`); figures should reference the semantic name, not the raw hue, so light/dark theming and future palette tuning land in one place.
+
+<table class="palette">
+<thead>
+<tr><th></th><th>Name</th><th>Token</th><th>Hex (light)</th></tr>
+</thead>
+<tbody>
+<tr><td><span class="swatch" style="background: var(--plot-ink-blue);"></span></td><td>Ink blue</td><td><code>--plot-ink-blue</code></td><td><code>#355C7D</code></td></tr>
+<tr><td><span class="swatch" style="background: var(--plot-ochre);"></span></td><td>Ochre</td><td><code>--plot-ochre</code></td><td><code>#D8A632</code></td></tr>
+<tr><td><span class="swatch" style="background: var(--plot-oxide-red);"></span></td><td>Oxide red</td><td><code>--plot-oxide-red</code></td><td><code>#B44C43</code></td></tr>
+<tr><td><span class="swatch" style="background: var(--plot-slate-teal);"></span></td><td>Slate teal</td><td><code>--plot-slate-teal</code></td><td><code>#4E7C74</code></td></tr>
+<tr><td><span class="swatch" style="background: var(--plot-deep-violet);"></span></td><td>Deep violet</td><td><code>--plot-deep-violet</code></td><td><code>#6C5B7B</code></td></tr>
+<tr><td><span class="swatch" style="background: var(--plot-graphite);"></span></td><td>Graphite</td><td><code>--plot-graphite</code></td><td><code>#5B5B5B</code></td></tr>
+<tr><td><span class="swatch" style="background: var(--plot-burnt-orange);"></span></td><td>Burnt orange</td><td><code>--plot-burnt-orange</code></td><td><code>#C97B36</code></td></tr>
+<tr><td><span class="swatch" style="background: var(--plot-olive-sage);"></span></td><td>Olive sage</td><td><code>--plot-olive-sage</code></td><td><code>#7A8B5A</code></td></tr>
+</tbody>
+</table>
+
 ## Quotations
 
 A blockquote sits in the body flow with a 2px left rule, italicized, secondary text color. It is the inline-quotation register: quoting a passage that informs the surrounding argument:
