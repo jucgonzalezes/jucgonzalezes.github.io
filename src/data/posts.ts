@@ -15,7 +15,7 @@ export const posts: Post[] = [
     slug: 'reading-flow-fields',
     title: 'Reading flow fields',
     abstract:
-      'A short essay on vector fields as scientific instruments — what a sparse grid of arrows can reveal about continuous motion, and where the abstraction breaks down.',
+      'A short essay on vector fields as scientific instruments: what a sparse grid of arrows can reveal about continuous motion, and where the abstraction breaks down.',
     date: '2026-06-15',
     state: 'forthcoming',
     figLabel: 'Fig. 01',
@@ -25,7 +25,7 @@ export const posts: Post[] = [
     slug: 'shapes-of-superposition',
     title: 'Shapes of superposition',
     abstract:
-      'Notes on the perceptual rhythm of stacked sinusoids — how phase, frequency, and amplitude resolve into something the eye reads as continuous form.',
+      'Notes on the perceptual rhythm of stacked sinusoids: how phase, frequency, and amplitude resolve into something the eye reads as continuous form.',
     date: '2026-07-08',
     state: 'forthcoming',
     figLabel: 'Fig. 02',

@@ -29,9 +29,9 @@ Typography forms the primary structural language of the site.
 
 The system is set in three families, each carrying a distinct editorial voice:
 
-- **Inter** — sans-serif for interface, navigation, headings, and structural hierarchy
-- **Source Serif 4** — serif for extended reading, essay bodies, and reflective writing
-- **IBM Plex Mono** — monospace for code, annotations, references, coordinates, figure labels, eyebrows, and the colophon register
+- **Inter**: sans-serif for interface, navigation, headings, and structural hierarchy
+- **Source Serif 4**: serif for extended reading, essay bodies, and reflective writing
+- **IBM Plex Mono**: monospace for code, annotations, references, coordinates, figure labels, eyebrows, and the colophon register
 
 Typography is treated not as branding, but as architecture.
 
@@ -54,7 +54,7 @@ The site intentionally favors:
 
 over decorative interface patterns.
 
-Some pages — beginning with this one's sibling, the About page — expose their grid directly. The treatment is a decentered three-panel composition: two visible vertical pillars divide the viewport into an unequal asymmetric grid, with the body column anchored to the left and a deliberately wider right field reserved for marginalia, figures, and side annotations. Horizontal rules at full viewport width mark the article frame and each section break. The asymmetry is structural, not stylistic — it is what gives long-form reading room to be quiet on the left while the figures and apparatus speak on the right.
+The gridded pages compose on a decentered three-panel structure: an unequal asymmetric grid with the body column anchored to the left and a deliberately wider right field reserved for marginalia, figures, and side annotations. The asymmetry is structural, not stylistic. It is what gives long-form reading room to be quiet on the left while the figures and apparatus speak on the right. Pages can optionally make the grid visible as an article frame (vertical pillars at the panel boundaries, horizontal rules at full viewport width on the page-header and at each section). The visible frame is reserved for compositions where the apparatus earns its presence; ordinary content pages run with the grid silent.
 
 A full account of the grid, the bleed paradigms, the figure apparatus, and the structured colophon system lives in `docs/design-system.md`.
 
@@ -85,7 +85,7 @@ Visualizations are rendered primarily in SVG and integrate with the surrounding 
 
 The site is deployed as a static build to GitHub Pages.
 
-Discoverability and link-share metadata are handled at build time. `@astrojs/sitemap` emits `sitemap-index.xml` and `sitemap-0.xml` automatically from the configured `site` value; `robots.txt` allows all crawlers and points to the sitemap index. The shared `BaseLayout` emits a `<link rel="canonical">` plus the Open Graph (`og:title`, `og:description`, `og:url`, `og:type`, `og:site_name`) and Twitter card meta for every page, so unfurled links render predictably across clients. No `og:image` is shipped yet — the cardless summary is the honest representation of what exists today.
+Discoverability and link-share metadata are handled at build time. `@astrojs/sitemap` emits `sitemap-index.xml` and `sitemap-0.xml` automatically from the configured `site` value; `robots.txt` allows all crawlers and points to the sitemap index. The shared `BaseLayout` emits a `<link rel="canonical">` plus the Open Graph (`og:title`, `og:description`, `og:url`, `og:type`, `og:site_name`) and Twitter card meta for every page, so unfurled links render predictably across clients. No `og:image` is shipped yet; the cardless summary is the honest representation of what exists today.
 
 ## Disclaimer: AI usage
 

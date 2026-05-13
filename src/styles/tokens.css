@@ -92,7 +92,7 @@
 
   /* Vertical padding for "framed header" boxes (an h1 / section title
      bounded by horizontal grid lines). Off the geometric --space-N scale
-     by design — the eyeballed value lands between --space-5 and --space-6.
+     by design; the eyeballed value lands between --space-5 and --space-6.
      Use this token anywhere a heading should sit centered between two
      bounding grid lines so the spacing rhythm stays uniform. */
   --frame-pad-y: 1.35rem;
@@ -102,7 +102,7 @@
   --rule-strong: 2px solid var(--color-text);
 }
 
-/* Dark theme — defined now, activated later by [data-theme="dark"] on <html>. */
+/* Dark theme: defined now, activated later by [data-theme="dark"] on <html>. */
 [data-theme="dark"] {
   --color-bg: #121212;
   --color-surface: #1A1A1A;

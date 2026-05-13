@@ -18,7 +18,7 @@ const slides = featured.map((post, i) => ({
   figName: post.figName ?? '',
 }));
 ---
-<BaseLayout title="Juan C. Gonzalez — Computational Editorialism">
+<BaseLayout title="Juan C. Gonzalez · Computational Editorialism">
   <section class="billboard" aria-labelledby="billboard-title">
     <div class="billboard-figure" aria-hidden="true">
       <div class="slide-track" data-slide-track>
@@ -111,7 +111,7 @@ const slides = featured.map((post, i) => ({
               data-index={i}
               role="tab"
               aria-current={i === 0 ? 'true' : 'false'}
-              aria-label={`Show ${s.eyebrow} — ${s.title}`}
+              aria-label={`Show ${s.eyebrow}: ${s.title}`}
             >
               <span class="pager-num">{String(i + 1).padStart(2, '0')}</span>
               <span class="dot" aria-hidden="true"></span>
@@ -404,7 +404,7 @@ const slides = featured.map((post, i) => ({
     outline-offset: 3px;
   }
 
-  /* Progress bar — rides the top edge of the fig card. */
+  /* Progress bar: rides the top edge of the fig card. */
   .billboard-fig-card .card-progress {
     position: absolute;
     top: -1px;
@@ -536,7 +536,7 @@ const slides = featured.map((post, i) => ({
    * - Two slides, auto-advancing every DURATION ms.
    * - Progress bar inside the card shows time-to-next.
    * - Hovering (or touching) the figure pauses the timer.
-   *   The card itself does not pause — it sits above the figure and
+   *   The card itself does not pause; it sits above the figure and
    *   intercepts hover, so the figure's mouseleave fires, resuming.
    * - Pager buttons jump to a specific slide and reset elapsed time.
    * - Under prefers-reduced-motion: no auto-advance; pager still works.
@@ -631,7 +631,7 @@ const slides = featured.map((post, i) => ({
 
     // Pause when cursor (or touch) lands on the figure. The card overlays
     // the figure and intercepts pointer events, so the figure's mouseleave
-    // fires while hovering the card — i.e. timer keeps running over the card.
+    // fires while hovering the card, i.e. timer keeps running over the card.
     figure.addEventListener('mouseenter', pause);
     figure.addEventListener('mouseleave', resume);
     figure.addEventListener('touchstart', pause, { passive: true });
