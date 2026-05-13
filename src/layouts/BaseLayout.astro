@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-// KaTeX stylesheet — required for math markup rendered by rehype-katex
+// KaTeX stylesheet: required for math markup rendered by rehype-katex
 // at build time. Loaded site-wide so any page can include $...$ or
 // $$...$$ math without per-page imports.
 import 'katex/dist/katex.min.css';
@@ -47,7 +47,7 @@ const siteName = 'Juan C. Gonzalez';
     <title>{title}</title>
 
     {/*
-      Theme boot script — runs synchronously before any CSS or first paint
+      Theme boot script: runs synchronously before any CSS or first paint
       so we never flash the wrong theme. `is:inline` keeps Astro from
       bundling/deferring it.
     */}

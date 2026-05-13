@@ -2,9 +2,9 @@
 
 ## Typography
 
-The site is set in three families. The triple is a deliberate commitment, not a default — each family carries a distinct editorial voice and the three together compose the typographic system that any future page inherits.
+The site is set in three families. The triple is a deliberate commitment, not a default. Each family carries a distinct editorial voice and the three together compose the typographic system that any future page inherits.
 
-### Inter — the architectural voice
+### Inter: the architectural voice
 
 Used for navigation, headings, UI components, figure labels, metadata, and diagram annotations.
 
@@ -12,26 +12,26 @@ Recommended weights: 400, 500, 600, 700, 900.
 
 Inter is a contemporary sans designed for screen rendering across UI and display scales. It carries the structural work on this site: navigation, section titles, h2/h3 hierarchy, and the figure-number labels that index publication apparatus. At display scale (the article title) Inter's tight horizontal metrics let the eye read the title as architecture, not as text. At UI scale (eyebrow, captions) its open shapes hold legibility down to 12px. The site uses the variable font, which keeps weight transitions continuous and removes the need to ship discrete weight files.
 
-### Source Serif 4 — the reading voice
+### Source Serif 4: the reading voice
 
 Used for long-form essay bodies, reflective writing, and quotations.
 
-Source Serif 4 is the body argument of the site. It is a transitional-style serif with relatively open apertures, drawn explicitly for screen reading at the measures and leadings that long-form work demands. At the canonical body size (17px / 1.0625rem) and `--lh-prose` (1.65), Source Serif 4 sets to roughly 65–72 characters per line at the `--measure` width — Bringhurst's number. Where the page asks the reader to settle in, this is the family carrying that ask.
+Source Serif 4 is the body argument of the site. It is a transitional-style serif with relatively open apertures, drawn explicitly for screen reading at the measures and leadings that long-form work demands. At the canonical body size (17px / 1.0625rem) and `--lh-prose` (1.65), Source Serif 4 sets to roughly 65 to 72 characters per line at the `--measure` width (Bringhurst's number). Where the page asks the reader to settle in, this is the family carrying that ask.
 
-### IBM Plex Mono — the computational voice
+### IBM Plex Mono: the computational voice
 
 Used for code blocks, annotations, references, technical metadata, coordinates, axis labels, the eyebrow register, figure-number prefixes (set in mono small caps), and the colophon.
 
-Plex Mono is a publishing-grade monospace — it is the typewriter-ledger family that signals "this is structured data, an index, a coordinate, a citation" rather than the coder-terminal family that signals "this is source code." On this site it has three structural addresses: eyebrows (label), figure labels (label), and the colophon / marginalia (read). Keeping mono present in those three roles is what lets the publication system read as a publication system rather than as a serif-on-cream blog.
+Plex Mono is a publishing-grade monospace: the typewriter-ledger family that signals "this is structured data, an index, a coordinate, a citation" rather than the coder-terminal family that signals "this is source code." On this site it has three structural addresses: eyebrows (label), figure labels (label), and the colophon / marginalia (read). Keeping mono present in those three roles is what lets the publication system read as a publication system rather than as a serif-on-cream blog.
 
 ### Why these three, together
 
-Inter / Source Serif 4 / IBM Plex Mono is the recognizable 2026 editorial-web triple — Distill, Stripe Press, Vercel, and a long tail of computational-publishing sites use some combination of it. The site commits to it knowingly:
+Inter / Source Serif 4 / IBM Plex Mono is the recognizable 2026 editorial-web triple. Distill, Stripe Press, Vercel, and a long tail of computational-publishing sites use some combination of it. The site commits to it knowingly:
 
 - All three are open-source and self-hosted (Fontsource), so the site has no third-party type dependency.
 - Inter and Source Serif 4 are variable fonts; Plex Mono ships at selected weights only. Together they total a small payload.
 - Their x-heights are close enough that sans and serif can sit on the same baseline without optical adjustment; Plex Mono's cap-height aligns cleanly with Inter at matching sizes, which matters when mono labels sit inline with sans captions.
-- Each family carries a *distinct* editorial role on this site — architecture, reading, computational annotation. The triple is a three-voice instrument, not three interchangeable sans choices.
+- Each family carries a *distinct* editorial role on this site: architecture, reading, computational annotation. The triple is a three-voice instrument, not three interchangeable sans choices.
 
 If a future redesign substitutes one family, the substitution should be motivated by what the *role* needs (a serif with more presence, a sans with more warmth, a mono with looser tracking), not by family fashion. Candidate substitutions worth considering before that point: Lyon Text or Tiempos Text for the serif (more authored voice); Söhne or Untitled Sans for the sans (more editorial weight); JetBrains Mono or Berkeley Mono for the mono (more present, less neutral).
 
@@ -58,7 +58,7 @@ Accent colors are scoped to specific surfaces:
 - interaction states (link hover, focus outlines)
 - the dedicated visualization palette (below) for figures and simulations
 
-Content pages — about, colophon, blog index, and all future essays — are **monochromatic** by default. Eyebrows, blockquote bars, status badges, and other permanent visual chrome on those pages use the neutral palette only.
+Content pages (about, colophon, blog index, and all future essays) are **monochromatic** by default. Eyebrows, blockquote bars, status badges, and other permanent visual chrome on those pages use the neutral palette only.
 
 ## Visualization Palette
 
@@ -73,7 +73,7 @@ Content pages — about, colophon, blog index, and all future essays — are **m
 | Burnt Orange | #C97B36 |
 | Olive Sage | #7A8B5A |
 
-These are exposed both as raw tokens (`--plot-ink-blue`, etc.) and as semantic plot tokens (`--plot-axis`, `--plot-label`, `--plot-grid`, `--plot-series-1` … `--plot-series-8`, `--plot-highlight`, `--plot-bg`). Figures should reference the semantic tokens — never the raw values — so light/dark theming and future palette tuning land in one place.
+These are exposed both as raw tokens (`--plot-ink-blue`, etc.) and as semantic plot tokens (`--plot-axis`, `--plot-label`, `--plot-grid`, `--plot-series-1` … `--plot-series-8`, `--plot-highlight`, `--plot-bg`). Figures should reference the semantic tokens (never the raw values) so light/dark theming and future palette tuning land in one place.
 
 The default ink for figure SVGs is `--plot-graphite` (a muted gray from the series). Setting figure color this way rather than via `currentColor` (which would inherit body text color) gives figures their own perceptual contrast line, theme-tuned for visualization rather than reading. Figures with more structure should set finer-grained tokens on SVG elements directly: `fill="var(--plot-series-1)"`, `stroke="var(--plot-axis)"`, etc.
 
@@ -106,29 +106,35 @@ Gridded content pages (`gridded: true` in frontmatter) lay out on a three-panel 
 
 - **Panel 1** (`--asymm-left`): `min(10rem, max(0px, (100vw - --measure-wide) / 4))`
 - **Panel 3** (`--asymm-right`): `min(20rem, max(0px, (100vw - --measure-wide) / 2))`
-- **Panel 2** (`--asymm-center`): the remainder — fills whatever's left between the two margins
+- **Panel 2** (`--asymm-center`): the remainder, filling whatever's left between the two margins
 
-The grid is **decentered by design**: panel 3 is twice as wide as panel 1. The visible inner-left pillar sits closer to viewport-left than the inner-right pillar sits to viewport-right. The right field is the structural "marginalia register" — wider on purpose, intended to carry sidenotes, captions, and bleed-right figures.
+The grid is **decentered by design**: panel 3 is twice as wide as panel 1. The visible inner-left pillar sits closer to viewport-left than the inner-right pillar sits to viewport-right. The right field is the structural "marginalia register": wider on purpose, intended to carry sidenotes, captions, and bleed-right figures.
 
-Both panels are capped (10rem and 20rem) so on very wide viewports the side fields don't grow to an unusable size — the grid degrades into an effectively-centered layout at large viewports rather than continuing to expand the side fields.
+Both panels are capped (10rem and 20rem) so on very wide viewports the side fields don't grow to an unusable size. The grid degrades into an effectively-centered layout at large viewports rather than continuing to expand the side fields.
 
-**Below 1100px** the grid falls back to the centered v2 layout — both margins equal to `(100vw - --measure-wide) / 2`. The asymmetric program only engages when the viewport can carry it.
+**Below 1100px** the grid falls back to the centered v2 layout, with both margins equal to `(100vw - --measure-wide) / 2`. The asymmetric program only engages when the viewport can carry it.
 
 The geometry tokens are defined on `main:has(.has-grid)` so a single source of geometry truth cascades to the article, the pillars, the rules, and the bleed paradigms. Changing the breakpoint or caps touches one place.
 
-## Framed Header Pattern
+## Framed Header Pattern (opt-in)
 
-Gridded pages declare a framed page-header. The pattern:
+Gridded pages are **silent by default**: `gridded: true` engages the panel-layout math (asymm-left, asymm-center, asymm-right, body cap at `--measure`, the bleed paradigms) but no visible rule chrome is drawn. The framed pattern below is an opt-in via a second frontmatter field, `framed: true`, reserved for pages whose composition warrants the visible apparatus (essay covers, exhibition entries, anything where the architecture of the page is part of the reading event).
+
+`framed: true` requires `gridded: true`. Setting framed without gridded is a no-op.
+
+When framed, the pattern draws:
 
 - **Vertical pillars** on `<main>` at panel-1 / panel-2 and panel-2 / panel-3 boundaries, spanning the content region between the site header and footer.
 - **Article top + bottom rules**: 1px lines at full viewport width.
 - **Page-header top rule**: 1px line at full viewport width, immediately above the title.
-- **Per-section rules**: each `<h2>` opens with a 1px top rule at full viewport width — including the first h2 (every section is the same kind of object).
-- **No eyebrow row** on gridded pages. The frontmatter `eyebrow` field is honored for non-gridded pages (e.g. `/colophon`) but is intentionally not rendered on gridded pages — the page-header's top rule does the upper-frame work that the eyebrow used to do.
+- **Per-section rules**: each `<h2>` opens with a 1px top rule at full viewport width, including the first h2 (every section is the same kind of object).
+- **No eyebrow row** on framed pages. The frontmatter `eyebrow` field is honored for non-gridded pages (e.g. `/colophon`) but is intentionally not rendered on framed pages: the page-header's top rule does the upper-frame work that the eyebrow used to do.
 - **Title** hangs from the page-header's top rule with asymmetric vertical padding: `var(--frame-pad-y)` above, `var(--space-12)` below. The page-header has NO closing rule on its bottom; the title floats above the body, the first h2's rule is unambiguously the first section divider.
 - **Display scale** for the title on gridded pages only: `clamp(2.625rem, 7vw, var(--fs-3xl))`. Non-gridded pages use a smaller title.
 - **No intersection dots.** Corners and T-intersections are clean line crossings.
 - **All lines use `var(--color-rule)`**, adapting automatically in dark mode.
+
+Current consumers: zero. `framed` is a documented capability with no live page using it yet. The two currently-gridded pages (`/about`, `/design-system`) run silent.
 
 ## Poster Compositions
 
@@ -144,7 +150,7 @@ The poster pattern:
 - **`<main>` becomes a flex column** on a poster page via `:global(main:has(.error)) { display: flex; flex-direction: column }`, with the section claiming `flex: 1`. This lets the composition fill the space between header and footer without hand-calculated `min-height: calc(100vh - <chrome>)` math, which breaks when the footer wraps or its margin changes.
 - **Display numeral spec** (the `404`): Inter weight 700, `clamp(9rem, 22vw, 17rem)`, `letter-spacing: -0.04em`, `line-height: 0.85`, `font-variant-numeric: lining-nums tabular-nums`. The `tabular-nums` flag is load-bearing at display size: without it the proportional widths read as casually set rather than architectural.
 - **Grid centering with breathing rows.** The section uses a row template of the form `2fr auto auto auto 1fr auto 1fr` to (1) keep the numerals above vertical centre via the leading `2fr`, (2) hang the paragraph from the hairline, and (3) centre the link table in the silence below the paragraph with equal `1fr` rows above and below. The centring is geometric relative to the section's box; the visible footer line sits below the section by the footer's `margin-top`, so the table reads as slightly higher than midway-to-footer by that margin.
-- **Responsive collapse below 1100px.** All composition pieces stack flush left in document order; tracking on the numerals eases from `-0.04em` to `-0.03em` below 600px. Asymmetric placement is not preserved at narrow widths — it would read as broken.
+- **Responsive collapse below 1100px.** All composition pieces stack flush left in document order; tracking on the numerals eases from `-0.04em` to `-0.03em` below 600px. Asymmetric placement is not preserved at narrow widths (it would read as broken).
 
 Future poster pages (essay covers, exhibition entries, error states beyond 404) should reuse this register: one event, one hairline, monochrome, asymmetric placement, no `PageLayout` apparatus.
 
@@ -152,26 +158,68 @@ Future poster pages (essay covers, exhibition entries, error states beyond 404) 
 
 Five classes define how content interrupts or coexists with the body column. All five are scoped to `.has-grid`.
 
-### Crossing variants — sit ON the grid, occlude the pillars they cross
+### Crossing variants: sit ON the grid, occlude the pillars they cross
 
-- **`.bleed-full`** — spans viewport-left to viewport-right (panel 1 + 2 + 3).
-- **`.bleed-right`** — anchored at viewport-right, extends leftward into the central panel by `--bleed-fraction` of `--asymm-center` (default 1/3, so it covers panel 3 + the rightmost third of panel 2).
-- **`.bleed-left`** — mirror of `.bleed-right`.
+- **`.bleed-full`**: spans viewport-left to viewport-right (panel 1 + 2 + 3).
+- **`.bleed-right`**: anchored at viewport-right, extends leftward into the central panel by `--bleed-fraction` of `--asymm-center` (default 1/3, so it covers panel 3 + the rightmost third of panel 2).
+- **`.bleed-left`**: mirror of `.bleed-right`.
 
 Each crossing variant has `background: var(--color-bg)` and `z-index: 1`, so the pillar it crosses is visually interrupted at the figure's vertical extent. Editorial logic: a figure that sits on a grid line breaks the grid line where the figure sits.
 
-### Margin variants — sit BESIDE the grid, do not cross pillars
+### Margin variants: sit BESIDE the grid, do not cross pillars
 
-- **`.bleed-margin-right`** — entirely inside panel 3.
-- **`.bleed-margin-left`** — entirely inside panel 1.
+- **`.bleed-margin-right`**: entirely inside panel 3.
+- **`.bleed-margin-left`**: entirely inside panel 1.
 
-These are the sidenote / marginalia register. They are set in sans `--fs-sm` secondary text, no background, no z-index lift — the pillar remains visible alongside as the boundary.
+These are the sidenote / marginalia register. They are set in sans `--fs-sm` secondary text, with no background and no z-index lift, so the pillar remains visible alongside as the boundary.
 
 ### Configuration
 
 `--bleed-fraction` (default `1/3`) controls how far `.bleed-right` and `.bleed-left` intrude into the central panel. Override per element with `style="--bleed-fraction: 0.5"` for a half-width bleed.
 
 `--caption-width` (default `calc(--asymm-center / 3)`) is the standardized width for side-anchored captions on cantilevered figures. Decoupled from `--bleed-fraction` so a figure at fraction 0.5 doesn't end up with a wider caption box than one at fraction 1/3.
+
+## Float-right Figure (text-wrap register)
+
+A sixth figure register, distinct from the bleed family above. The class `.figure-float-right` is used when the figure has its own natural aspect ratio (a photo, an irregular cutout) and should sit beside body text with paragraphs wrapping around it. Where the bleed paradigms occupy sized cells (the image scales to fit), the float-right register preserves the image's intrinsic proportions.
+
+**Behaviour**:
+
+- `float: right` plus a calculated `margin-right` so the figure aligns with a chosen vertical line. The two common targets:
+  - **Pillar-aligned** (used on `/about`): the figure's centre sits on the right pillar (`.prose` right edge), half inside the central panel, half overhanging into the right field. `margin-right: -half-image-width`.
+  - **Measure-aligned**: the figure's right edge sits at `var(--measure)`, fully inside the body column. `margin-right: max(0px, calc(100% - var(--measure) - half-image-width))`.
+- No `max-height` cap. Height is `auto` so the image keeps its aspect ratio (the bleed-right `max-height: min(60vh, 28rem)` rule explicitly excludes this class).
+- No bounding chrome. Generic `figure` styles in `.has-grid` add `border-top`, padding, and large margins; this pattern resets all of them.
+- `h2` clears the float unconditionally. A section heading sitting beside a tall floated figure reads as caption to the figure rather than as a structural break. `clear: both` on `h2` commands the section break regardless of whether `framed` is on. `h3` does not clear (it's subdivision within a section).
+- On framed pages, the figure carries `position: relative; background: var(--color-bg); z-index: 1` so it occludes the pillar it crosses, matching the bleed-right convention. On silent gridded pages (no pillars drawn) this machinery is inert but cheap to keep.
+
+**When to use vs `.bleed-margin-right`**: float-right when text should wrap around the figure and the image has intrinsic aspect ratio. Margin-right when the content is sans-set marginalia text (sidenotes, captions, mini-tables) and the body paragraph should *not* wrap.
+
+**Selector specificity note**: the float-right rule must beat the generic `figure:not([class*="bleed-"])` cap at `var(--measure)` and the generic figure border / padding / margin chrome. It wins by including `figure.figure-float-right` (an extra type selector) and by resetting `border / padding / margin` inside the block. Adding more bleed-* siblings doesn't disturb the float-right rule; adding more `figure:not(...)` overrides would.
+
+## Mark / Highlight register
+
+`<mark>` is the semantic carrier for in-prose emphasis on a key phrase. The element is styled globally:
+
+```css
+mark {
+  background: var(--color-accent-soft);
+  color: inherit;
+  padding: 0 0.15em;
+}
+```
+
+`var(--color-accent-soft)` is the Soft Highlight token from the Editorial Accent palette (`#E7C46A` light, `#6E5928` dark). Text color inherits so the highlight band is the only mark.
+
+**The editorial rule** (use this as the decision criterion, not as a numerical quota):
+
+> The page's load-bearing thesis phrase, at the lead, marked once.
+
+This is the only accent that appears on content pages. The monochromatic-content rule (above) stands: `<mark>` is not a permanent visual element of the page chrome, it's a writer's typographic move on a specific phrase. If a page doesn't have a load-bearing thesis phrase to mark, it doesn't get a mark.
+
+**Why Soft over Primary Ochre**: `#D8A632` (Primary) reads as a UI badge in this position. `#E7C46A` (Soft) reads as a Tufte-style margin annotation. The mark is annotation, not badge.
+
+**Selection rhyme**: `::selection` uses the same `--color-accent-soft` token. Intentional. Both selection and `<mark>` are "this is the salient phrase" marks; sharing the colour token treats them as one register.
 
 ## Figure Apparatus
 
@@ -189,36 +237,36 @@ The cantilevered figures use a **margin-bracket** treatment rather than a four-s
 
 - Top rule, bottom rule, and a vertical rule on the central-panel-side edge close the figure into a three-sided bounded region.
 - The fourth side is defined by the viewport edge the figure is anchored to. The figure reads as "hinged to the edge," not contained inside the page.
-- The bottom rule is the figure's own `border-bottom` (not the figcaption's `border-top` as in the stacked pattern) — the figcaption is no longer in the figure's flow.
+- The bottom rule is the figure's own `border-bottom` (not the figcaption's `border-top` as in the stacked pattern), because the figcaption is no longer in the figure's flow.
 - The figcaption is **absolutely positioned outside** the figure box: to the left of `.bleed-right`, to the right of `.bleed-left`. Bottom-aligned with the figure's bottom edge. Width: `var(--caption-width)`.
-- The caption fills part of the body-column's empty band at the figure's vertical extent — it gives the empty space a register and an occupant.
+- The caption fills part of the body-column's empty band at the figure's vertical extent: it gives the empty space a register and an occupant.
 - A height cap of `min(60vh, 28rem)` on the SVG keeps the figure from leaving an over-tall vertical void that would start to read as abandonment.
 
 ## Code Blocks
 
-Code blocks (rendered by Astro's built-in Shiki) use a **dual minimal-color theme** — `min-light` for light mode, `min-dark` for dark mode. The themes are configured with `defaultColor: false` so Shiki emits CSS custom properties (`--shiki-light`, `--shiki-dark`) rather than inline `color:` styles, and a single CSS rule wires them to the active theme via `[data-theme="dark"]` without `!important`.
+Code blocks (rendered by Astro's built-in Shiki) use a **dual minimal-color theme**: `min-light` for light mode, `min-dark` for dark mode. The themes are configured with `defaultColor: false` so Shiki emits CSS custom properties (`--shiki-light`, `--shiki-dark`) rather than inline `color:` styles, and a single CSS rule wires them to the active theme via `[data-theme="dark"]` without `!important`.
 
 The container surfaces (background, border, padding) come from the global `pre` rule. The Plex Mono typeface and a muted 3–4-hue syntactic palette together produce the "research appendix" register CLAUDE.md asks for, not terminal-bright colors.
 
-A `data-language` attribute (emitted automatically by Astro) is displayed as a small mono uppercase tag in the top-right of every block — same register as the eyebrow and figure-number labels — so the language is named without the reader having to guess from the syntax.
+A `data-language` attribute (emitted automatically by Astro) is displayed as a small mono uppercase tag in the top-right of every block (same register as the eyebrow and figure-number labels), so the language is named without the reader having to guess from the syntax.
 
 ## Colophon System
 
 The colophon is the trailing-register block at the end of an article. It supports two coexisting patterns inside a `.colophon` wrapper:
 
-### Simple slots — `<p>` elements
+### Simple slots: `<p>` elements
 
 For attributions or single lines where the role is implicit. `/about` uses this pattern: a single sentence ("Set in Inter, Source Serif 4 & IBM Plex Mono.") with no key/value label.
 
-### Structured slots — `<dl>` elements
+### Structured slots: `<dl>` elements
 
-For trailing metadata that needs a label: attribution, citation, dates, references, license, DOI. Use `<div>` wrappers (with `display: contents`) to group each `<dt>` / `<dd>` pair into a grid row. The dl uses `align-items: baseline` so dt and dd share their baselines automatically — works even when dd wraps to multiple lines.
+For trailing metadata that needs a label: attribution, citation, dates, references, license, DOI. Use `<div>` wrappers (with `display: contents`) to group each `<dt>` / `<dd>` pair into a grid row. The dl uses `align-items: baseline` so dt and dd share their baselines automatically, working even when dd wraps to multiple lines.
 
 ### Cluster pattern
 
 For richer colophons (citation, dates, technical, rights all present), split the entries into **multiple `<dl>` elements** inside the `.colophon` wrapper, each representing a typographic cluster. `dl + dl` gets `margin-top: var(--space-5)` for the inter-cluster break. The result reads as grouped metadata rather than as a flat web-form. Lars Müller verso-page register.
 
-The dt label is mono uppercase tracked at `--fs-xs`, the dd value is mono sentence-case at `--fs-sm`. The container has no top rule and no padding-top — `margin-top: var(--space-16)` above is enough to mark it as a trailing note.
+The dt label is mono uppercase tracked at `--fs-xs`, the dd value is mono sentence-case at `--fs-sm`. The container has no top rule and no padding-top: `margin-top: var(--space-16)` above is enough to mark it as a trailing note.
 
 ## Theme
 
@@ -230,7 +278,7 @@ Math is rendered server-side at build time via `remark-math` + `rehype-katex`. T
 
 ## Print
 
-Print is not a first-class target. The site is built for screen — the `100vw` math underlying horizontal rules, the position-absolute pillars, the asymmetric bleed paradigms, and the decentered three-panel grid are all viewport constructs that don't carry on paper.
+Print is not a first-class target. The site is built for screen: the `100vw` math underlying horizontal rules, the position-absolute pillars, the asymmetric bleed paradigms, and the decentered three-panel grid are all viewport constructs that don't carry on paper.
 
 A minimal `@media print` block in `PageLayout.astro` does just enough to keep prints legible:
 

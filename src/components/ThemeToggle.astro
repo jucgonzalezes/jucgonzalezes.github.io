@@ -8,7 +8,7 @@
  * - After a user choice: localStorage wins; OS changes are ignored.
  * - If you ever want "follow system" back: clear localStorage.theme.
  *
- * The button shows the icon for the *target* theme — moon while in
+ * The button shows the icon for the *target* theme: moon while in
  * light mode (click to go dark), sun while in dark mode (click to go light).
  */
 ---
@@ -68,12 +68,12 @@
     line-height: 0;
   }
 
-  /* Default (light theme): show moon — clicking moves to dark. */
+  /* Default (light theme): show moon. Clicking moves to dark. */
   .icon-sun {
     display: none;
   }
 
-  /* Dark theme: show sun — clicking moves to light. */
+  /* Dark theme: show sun. Clicking moves to light. */
   :global([data-theme='dark']) .theme-toggle .icon-moon {
     display: none;
   }

@@ -17,21 +17,21 @@ Every visual element is expected to contribute either informational clarity, com
 
 Typography forms the primary structural language of the site. It is treated not as branding, but as architecture.
 
-- **Inter** — a modern sans-serif for interface, navigation, and structural hierarchy.
-- **Source Serif 4** — a serif layer for extended reading and reflective writing.
-- **IBM Plex Mono** — monospace typography for code, annotations, references, coordinates, and computational elements.
+- **Inter**: a modern sans-serif for interface, navigation, and structural hierarchy.
+- **Source Serif 4**: a serif layer for extended reading and reflective writing.
+- **IBM Plex Mono**: monospace typography for code, annotations, references, coordinates, and computational elements.
 
 Scale, spacing, alignment, and rhythm are used to establish editorial hierarchy and navigational flow.
 
 ## Layout and grid
 
-The layout is based on explicit modular grids inspired by editorial and Swiss modernist systems. The grid remains partially visible throughout the site as part of the visual language. Spacing and alignment are treated as compositional tools rather than invisible implementation details.
+The layout is based on explicit modular grids inspired by editorial and Swiss modernist systems. The grid is the compositional structure underlying every page, drawn visibly only where the composition warrants the apparatus. Spacing and alignment are treated as compositional tools rather than invisible implementation details.
 
 The site intentionally favors asymmetrical balance, structural whitespace, modular composition, and strong typographic anchoring over decorative interface patterns.
 
 ## Color
 
-The visual palette is intentionally restrained. The interface relies primarily on warm paper-like neutrals, dark ink-like typography, and a limited range of accent tones drawn from scientific publishing and editorial print systems. Accent colors are used sparingly and structurally — to emphasize relationships, guide attention, and support visual hierarchy.
+The visual palette is intentionally restrained. The interface relies primarily on warm paper-like neutrals, dark ink-like typography, and a limited range of accent tones drawn from scientific publishing and editorial print systems. Accent colors are used sparingly and structurally, to emphasize relationships, guide attention, and support visual hierarchy.
 
 A dedicated visualization palette is maintained separately from the editorial accent system, so plots, diagrams, and simulations remain legible without competing with the surrounding interface.
 

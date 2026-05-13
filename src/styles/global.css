@@ -28,7 +28,10 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  font-feature-settings:
+    "kern" 1,
+    "liga" 1,
+    "calt" 1;
 }
 
 body {
@@ -58,7 +61,12 @@ button {
 }
 
 /* ---------- Headings ---------- */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-sans);
   font-weight: 600;
   letter-spacing: -0.01em;
@@ -70,12 +78,29 @@ p {
   margin: 0;
 }
 
+/* ---------- Highlight ---------- */
+/* <mark> uses --color-accent-soft, the Soft Highlight token from the
+   editorial palette. This is the only accent that appears on content
+   pages, scoped to a single editorial discipline: the page's
+   load-bearing thesis phrase, at the lead, marked once. Text color
+   stays inherited so the highlight band is the only mark. Small
+   horizontal padding gives the mark a hint of breathing room past
+   the glyphs. ::selection (below) shares the same token: both are
+   "salient phrase" marks, in one register. */
+mark {
+  background: var(--color-accent-soft);
+  color: inherit;
+  padding: 0 0.15em;
+}
+
 /* ---------- Links ---------- */
 a {
   color: inherit;
   text-decoration: none;
   border-bottom: 1px solid var(--color-rule);
-  transition: border-color 120ms ease, color 120ms ease;
+  transition:
+    border-color 120ms ease,
+    color 120ms ease;
 }
 a:hover {
   border-color: var(--color-accent);
@@ -118,13 +143,13 @@ pre code {
 }
 
 /*
- * Shiki code-block wiring — dual-theme (min-light / min-dark) via CSS
+ * Shiki code-block wiring: dual-theme (min-light / min-dark) via CSS
  * variables. With `defaultColor: false` in astro.config.mjs, Shiki emits
  * per-token CSS custom properties (--shiki-light, --shiki-dark) but does
  * NOT apply inline color/background. The rules below wire those
  * properties to the active theme without needing !important. The pre's
  * surface background and 1px rule continue to come from the generic
- * `pre` rule above — Shiki only provides the per-token text colors.
+ * `pre` rule above; Shiki only provides the per-token text colors.
  *
  * Iris v5 #2: min-light/min-dark keep the structural information of the
  * code (comments, keywords, strings) visible through ~4 muted hues
@@ -143,7 +168,7 @@ pre.astro-code span {
 }
 
 /*
- * Language label — Astro emits `data-language="<lang>"` on the pre, so
+ * Language label: Astro emits `data-language="<lang>"` on the pre, so
  * the language identifier is available without a custom transformer.
  * Rendered as a small mono uppercase tag in the top-right of the block,
  * matching the eyebrow / figure-number register. Acts as the editorial

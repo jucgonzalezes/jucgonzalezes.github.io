@@ -6,6 +6,7 @@ interface Frontmatter {
   eyebrow?: string;
   description?: string;
   gridded?: boolean;
+  framed?: boolean;
 }
 
 interface Props {
@@ -13,10 +14,10 @@ interface Props {
 }
 
 const { frontmatter } = Astro.props;
-const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
+const fullTitle = `${frontmatter.title} · Juan C. Gonzalez`;
 ---
 <BaseLayout title={fullTitle} description={frontmatter.description}>
-  <article class:list={['page', { 'has-grid': frontmatter.gridded }]}>
+  <article class:list={['page', { 'has-grid': frontmatter.gridded, 'framed': frontmatter.framed }]}>
     {frontmatter.eyebrow && (
       <p class="eyebrow">{frontmatter.eyebrow}</p>
     )}
@@ -39,7 +40,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
   }
 
   /*
-   * Gridded variant — decentered three-panel composition.
+   * Gridded variant: decentered three-panel composition.
    *
    *   panel 1 (left margin)   = (100vw - --measure-wide) / 4  ← --asymm-left
    *   panel 2 (article)       = the remainder                  ← grows leftward
@@ -48,7 +49,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
    * Panel 3 is unchanged from the original centered layout. Panel 1 is half
    * its original width. Panel 2 absorbs the freed space. Net effect: the
    * article shifts left, the right gutter becomes notably wider than the
-   * left, and the composition reads asymmetrically across the page — the
+   * left, and the composition reads asymmetrically across the page: the
    * Crouwel / Stedelijk move rather than the Müller-Brockmann centered cover.
    *
    * The body text stays capped at --measure (36rem) and left-aligns inside
@@ -88,13 +89,17 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
     padding-bottom: var(--space-16);
   }
 
-  /* Top and bottom horizontal lines for the article — full viewport width.
+  /* Top and bottom horizontal lines for the article: full viewport width.
      Both sides anchored explicitly via `left` + `right` (negative values
      escape the article's panel-1/panel-3 margins). Avoids relying on
      `width: 100vw`, which can be trimmed by ancestor clipping when other
-     content (bleeds, etc.) creates horizontal overflow. */
-  .page.has-grid::before,
-  .page.has-grid::after {
+     content (bleeds, etc.) creates horizontal overflow.
+
+     Rule chrome (this and the page-header / h2 / pillar pseudos below)
+     is gated on `.framed`. Gridded pages without that opt-in run silent:
+     same layout math, no drawn rules. */
+  .page.has-grid.framed::before,
+  .page.has-grid.framed::after {
     content: '';
     position: absolute;
     left: calc(-1 * var(--asymm-left));
@@ -103,11 +108,11 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
     background: var(--color-rule);
     pointer-events: none;
   }
-  .page.has-grid::before { top: 0; }
-  .page.has-grid::after { bottom: 0; }
+  .page.has-grid.framed::before { top: 0; }
+  .page.has-grid.framed::after { bottom: 0; }
 
   /*
-   * Internal dividers — page-header top + every h2 top.
+   * Internal dividers: page-header top + every h2 top.
    *
    * Each element keeps its -gutter bleed so it extends out to the article's
    * outer box. In element-local coords its left edge sits at -gutter; its
@@ -124,26 +129,26 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
        --frame-pad-y above (the rhythm token shared by other framed heads),
        then a larger gap below so the title reads as PLACED on the rule
        rather than CENTERED in a box. Iris/Ruder: vertical paddings should
-       rarely be equal — the eye reads down, not symmetrically. */
+       rarely be equal: the eye reads down, not symmetrically. */
     padding: var(--frame-pad-y) var(--gutter) var(--space-12);
     border-bottom: 0;
   }
 
   .page.has-grid .page-title {
-    /* Display scale only on the gridded variant — the framed-header is
+    /* Display scale only on the gridded variant: the framed-header is
        monumental enough to carry the larger glyphs, and Iris's note was
        explicit that the prior 2.625rem max read as "polite". */
     font-size: clamp(2.625rem, 7vw, var(--fs-3xl));
     max-width: var(--measure);
   }
 
-  /* Single top rule on the page-header — no closing rule below the title.
+  /* Single top rule on the page-header: no closing rule below the title.
      The page-header therefore doesn't share an edge with the first <h2>;
      the first section is unambiguously beneath, not swallowed inside.
      Both sides anchored via `left` + `right` (same math as the article
      rule above, plus `--gutter` because the page-header bleeds out by
-     `-var(--gutter)` from the article). */
-  .page.has-grid .page-header::after {
+     `-var(--gutter)` from the article). Gated on `.framed`. */
+  .page.has-grid.framed .page-header::after {
     content: '';
     position: absolute;
     top: 0;
@@ -154,7 +159,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
     pointer-events: none;
   }
 
-  /* Prose no longer caps its own width — individual blocks do, so the h2
+  /* Prose no longer caps its own width: individual blocks do, so the h2
      can grow to its parent's width and its centered pseudo aligns with the
      viewport. */
   .page.has-grid .prose {
@@ -165,8 +170,8 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
    * Body content cap. On gridded pages the central panel grows wide enough
    * that uncapped body content would lose Bringhurst's reading measure
    * (65–72 chars per line). Every body-level element that reads as part of
-   * the article's argument — prose, lists, quotes, sub-headings, code
-   * blocks, display math, horizontal rules — caps at --measure so the
+   * the article's argument (prose, lists, quotes, sub-headings, code
+   * blocks, display math, horizontal rules) caps at --measure so the
    * whole body-flow column aligns on its right edge. Elements that need
    * to bleed wider (figures with .bleed-*, tables, page-header, h2 rules)
    * opt out via their own selectors. */
@@ -190,7 +195,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
     padding-right: var(--gutter);
   }
 
-  /* Every h2 in the gridded variant gets a 100vw top rule via pseudo —
+  /* Every h2 in the gridded variant gets a 100vw top rule via pseudo,
      including the first. Iris/Crouwel: every section is the same kind of
      object. The first h2's :first-child base override (padding-top: 0)
      is restored below so the section rhythm matches its siblings. */
@@ -198,7 +203,9 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
     border-top: 0;
   }
 
-  .page.has-grid .prose :global(h2)::before {
+  /* Gated on `.framed`: every h2 in the framed gridded variant gets a
+     100vw top rule. Silent gridded pages skip it. */
+  .page.has-grid.framed .prose :global(h2)::before {
     content: '';
     position: absolute;
     top: 0;
@@ -220,13 +227,13 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
   }
 
   /*
-   * Colophon strip — gives Plex Mono a third structural job (eyebrow,
+   * Colophon strip: gives Plex Mono a third structural job (eyebrow,
    * footer metadata, and now this) so it reads as a voice in the system
    * rather than as garnish. Sits at the end of the article, bleeds to
    * the article's outer box so its rule reads as a grid event.
    */
   /*
-   * Colophon — the trailing register at the end of an article.
+   * Colophon: the trailing register at the end of an article.
    *
    * The colophon is a SYSTEM, not a single block. It supports two
    * coexisting patterns inside the .colophon wrapper:
@@ -245,16 +252,16 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
    *      to carry the publication apparatus.
    *
    * Iris (v2): the previous one-class flat colophon shared the eyebrow's
-   * exact signature, conflating LABEL with READ. The split below — base
+   * exact signature, conflating LABEL with READ. The split below: base
    * register is read (sans-case mono); structured-slot labels are FLAGS
-   * (mono uppercase tracked) — restores the distinction.
+   * (mono uppercase tracked): restores the distinction.
    *
    * Iris (v3): no top rule on the .colophon container; --space-16 above
    * is enough to mark it as a trailing note. The dl pattern does its own
    * structural work via the grid columns.
    */
 
-  /* Container base — applies to either pattern. */
+  /* Container base: applies to either pattern. */
   .prose :global(.colophon) {
     font-family: var(--font-mono);
     font-size: var(--fs-sm);
@@ -273,7 +280,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
     margin-bottom: 0;
   }
 
-  /* Structured slot pattern — definition list with label/value columns.
+  /* Structured slot pattern: definition list with label/value columns.
      Multiple <dl> elements can sit inside a .colophon, each representing
      a typographic-break cluster (Iris v5 #4: attribution / technical /
      dates / rights). Inter-cluster gap is wider than intra-cluster row
@@ -292,7 +299,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
     margin: 0;
   }
 
-  /* Inter-cluster break — visible step between dl groups. */
+  /* Inter-cluster break: visible step between dl groups. */
   .prose :global(.colophon dl + dl) {
     margin-top: var(--space-5);
   }
@@ -337,7 +344,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
    *   .bleed-margin-right  entirely inside panel-3
    *   .bleed-margin-left   entirely inside panel-1
    *
-   *   Marginalia register — Tufte/Lutz/Dumbar sidenote primitive. Set in
+   *   Marginalia register: Tufte/Lutz/Dumbar sidenote primitive. Set in
    *   a smaller, secondary type so the body remains primary.
    *
    * --- Configuration ---
@@ -358,7 +365,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
    * happens on .page.has-grid.
    */
 
-  /* Shared structural properties — all five paradigms. */
+  /* Shared structural properties: all five paradigms. */
   .page.has-grid .prose :global(.bleed-full),
   .page.has-grid .prose :global(.bleed-right),
   .page.has-grid .prose :global(.bleed-left),
@@ -407,7 +414,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
 
   /* Margin bleeds: sit ENTIRELY within their side panel; the pillar is
      their visual neighbor, not something they cross. No background +
-     z-index — the pillar should remain visible alongside as the boundary. */
+     z-index: the pillar should remain visible alongside as the boundary. */
   .page.has-grid .prose :global(.bleed-margin-right) {
     margin-left: auto;
     margin-right: calc(-1 * (var(--gutter) + var(--asymm-right)));
@@ -429,7 +436,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
     color: var(--color-text-secondary);
   }
 
-  /* Paragraph rhythm inside margin bleeds — tighter than body. */
+  /* Paragraph rhythm inside margin bleeds: tighter than body. */
   .page.has-grid .prose :global(.bleed-margin-right p),
   .page.has-grid .prose :global(.bleed-margin-left p) {
     margin: 0 0 var(--space-3);
@@ -452,7 +459,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
   }
 
   /* Iris v5 figure consult: tall .bleed-right and .bleed-left figures leave
-     a long vertical void in the body column at the figure's extent — past
+     a long vertical void in the body column at the figure's extent: past
      ~600px the silence reads as abandonment rather than breathing room.
      A height cap on the SVG (~28rem on most viewports, smaller on short
      viewports via 60vh) keeps the pause at a length the composition can
@@ -466,14 +473,78 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
   }
 
   /*
-   * Figure apparatus — <figure> + <figcaption>.
+   * Float-right pattern: a third figure register alongside the .bleed-*
+   * (crossing) and .bleed-margin-* (sidebar) paradigms. Image floats to
+   * the right of the body column; paragraphs wrap around it on the left.
+   * No pillar-occlusion machinery, no caption-cell, no bounding rules.
+   * Aspect ratio is preserved (height: auto, no max-height cap) so the
+   * figure honours the image's natural proportions.
+   *
+   * Positioning math. On gridded pages .prose has `max-width: none` so
+   * the body column extends across the whole central panel, while each
+   * paragraph is independently capped at var(--measure). A naive
+   * `float: right` would park the figure at the far right of .prose,
+   * many rems past the paragraph's right edge: no overlap, no wrap.
+   * The positive margin-right reels the figure's right edge back into
+   * a target x: measure + straddle (where straddle is how far the
+   * image overhangs into the empty field beyond the paragraph). The
+   * float therefore sits straddling the body column's right edge,
+   * half inside the prose, half outside. max() guards against negative
+   * margins on narrow viewports.
+   *
+   * Selector specificity: this rule must beat the generic
+   * `figure:not([class*="bleed-"])` cap at var(--measure) and the
+   * generic `figure { border-top; padding; margin }` chrome. We win
+   * by including `figure.figure-float-right` (one extra type
+   * selector) AND by explicitly resetting border / padding / top &
+   * bottom margins inside this block.
+   */
+  .page.has-grid .prose :global(figure.figure-float-right) {
+    float: right;
+    max-width: 23rem;
+    /* Align the figure's center horizontally with the article frame's
+       right pillar (.prose right edge). Half the image sits inside the
+       central panel, half extends into the right margin field. With
+       float-right, the float's right edge is at .prose-right minus
+       margin-right; for the center to land on .prose-right itself,
+       margin-right = -half-image-width. */
+    margin: 0 -7.5rem var(--space-4) var(--space-8);
+    border: 0;
+    padding: 0;
+    /* Sit on top of the right pillar (pillars are drawn at z-index: 0).
+       The page-bg background hides the line within the figure's
+       bounding box; the silhouette's transparent areas show that same
+       bg seamlessly so the pillar reads as interrupted, not as
+       crossing the figure. */
+    position: relative;
+    background: var(--color-bg);
+    z-index: 1;
+  }
+  .page.has-grid .prose :global(figure.figure-float-right img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  /* h2 clears preceding floats unconditionally. The clear is a section-
+     break command, not a rule-defense: a section heading sitting beside
+     a tall floated figure reads as caption to the figure rather than
+     as a structural break in the document (Iris: "Vogue masthead
+     pattern, not publication pattern"). True whether or not the framed
+     chrome is drawn. h3 does NOT clear because it is subdivision
+     within a section, not a section start. */
+  .page.has-grid .prose :global(h2) {
+    clear: both;
+  }
+
+  /*
+   * Figure apparatus: <figure> + <figcaption>.
    *
    * The figure element is layout-agnostic: it can sit inline at body
    * measure, or be combined with a .bleed-* class to position it across
    * panels. The figcaption is a separate typographic register (sans,
    * --fs-sm, secondary color) with an auto-numbered mono label.
    *
-   * Numbering — the counter increments on figcaption (not figure) so
+   * Numbering: the counter increments on figcaption (not figure) so
    * figures without captions don't create gaps in the sequence. A figure
    * without a caption is unindexed; one with a caption gets the next
    * available number. Counter scope: per article.
@@ -496,7 +567,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
      .bleed-right / .bleed-left, the bottom rule is the figure's own
      border-bottom (set in the EXPERIMENT v2 block) because the figcaption
      has been pulled out of the figure's flow. Convention either way:
-     same rule vocabulary as the page-header and h2 — declared by lines. */
+     same rule vocabulary as the page-header and h2: declared by lines. */
   .page.has-grid .prose :global(figure) {
     margin-top: var(--space-10);
     margin-bottom: var(--space-10);
@@ -504,9 +575,10 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
     padding-top: var(--space-3);
   }
 
-  /* Inline figures (no .bleed-* class) sit at body measure. The bleed
-     classes override this via their higher-specificity selectors. */
-  .page.has-grid .prose :global(figure:not([class*="bleed-"])) {
+  /* Inline figures (no .bleed-* class and not the float-right register)
+     sit at body measure. The bleed classes and the float-right pattern
+     override this via their own dimensional rules. */
+  .page.has-grid .prose :global(figure:not([class*="bleed-"]):not(.figure-float-right)) {
     max-width: var(--measure);
   }
 
@@ -520,7 +592,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
   /*
    * Figure ink. Iris (v4): figures inheriting prose color (--color-text)
    * via currentColor invert the perceptual contrast between light and
-   * dark modes — black-on-cream reads "harder" than off-white-on-near-
+   * dark modes: black-on-cream reads "harder" than off-white-on-near-
    * black at the same nominal contrast ratio. Pulling from a plot token
    * gives figures their own semantic color line, theme-tuned for
    * visualization rather than reading.
@@ -528,8 +600,8 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
    * The default is --plot-graphite (a neutral gray from the series,
    * tuned for both themes in tokens.css). Figures with more structure
    * (axis lines + data points + labels) should set finer-grained tokens
-   * on SVG elements directly — `fill="var(--plot-series-1)"`,
-   * `stroke="var(--plot-axis)"`, etc. — rather than rely on the inherited
+   * on SVG elements directly: `fill="var(--plot-series-1)"`,
+   * `stroke="var(--plot-axis)"`, etc.: rather than rely on the inherited
    * color alone.
    */
   .page.has-grid .prose :global(figure svg) {
@@ -550,7 +622,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
        and caption text (padding-top). Matches the figure's top rule.
        .bleed-right and .bleed-left override these values (border-top: 0,
        margin-top: 0, padding-top: 0) because their captions are pulled
-       out of the figure's flow — see the EXPERIMENT v2 block below. */
+       out of the figure's flow: see the EXPERIMENT v2 block below. */
     margin-top: var(--space-3);
     padding-top: var(--space-3);
     border-top: 1px solid var(--color-rule);
@@ -570,12 +642,12 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
    * Combined with the figure's top rule (above) and bottom rule (added in
    * the EXPERIMENT v2 block below), this closes the cantilevered figure
    * into a three-sided bounded region. The fourth side is defined by the
-   * viewport edge the figure is anchored to — the figure reads as
+   * viewport edge the figure is anchored to: the figure reads as
    * "hinged to the edge" rather than "contained inside the page" (Iris
    * v6: this is a margin bracket, not a frame).
    *
    * Padding on the central-panel side keeps the SVG glyphs from touching
-   * the vertical rule — "aligned with" not "kissing."
+   * the vertical rule: "aligned with" not "kissing."
    */
   .page.has-grid .prose :global(.bleed-right) {
     border-left: 1px solid var(--color-rule);
@@ -649,10 +721,10 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
   }
 
   /*
-   * Eyebrow — section/page label above the title. Available to any page
+   * Eyebrow: section/page label above the title. Available to any page
    * using PageLayout via the `eyebrow` frontmatter field. On gridded pages
    * the eyebrow is intentionally NOT rendered (gridded pages declare
-   * `gridded: true` and skip the eyebrow): Iris v3/v5 — the row's right
+   * `gridded: true` and skip the eyebrow): Iris v3/v5: the row's right
    * terminus has no site-wide structural occupant, so a row with an empty
    * right half on the decentered composition stacks two voids and the
    * page reads as "waiting for something." Gridded pages use the
@@ -693,7 +765,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
        the full-viewport rule announces. fs-lg (22px) murmured against
        the rule; fs-xl (30px) reads as a section header at the right
        weight for a publication system. Negative tracking is reserved
-       for display scale — at 30px Inter, neutral tracking holds. */
+       for display scale: at 30px Inter, neutral tracking holds. */
     font-family: var(--font-sans);
     font-size: var(--fs-xl);
     font-weight: 600;
@@ -711,7 +783,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
   }
 
   .prose :global(h3) {
-    /* Iris: h3 was uppercase + tracked + secondary-color — a label, not a
+    /* Iris: h3 was uppercase + tracked + secondary-color: a label, not a
        heading. Recast as a continuation of the body argument (Hofmann):
        same sans family, slight weight lift, primary text color, no
        typewriter affectation. */
@@ -759,7 +831,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
     margin: var(--space-6) 0;
   }
 
-  /* Pull-quote — a distinct DISPLAY register, not the inline-quotation
+  /* Pull-quote: a distinct DISPLAY register, not the inline-quotation
      register of blockquote. Borderless, larger serif, italic, with a
      mono attribution. Use as <blockquote class="pull-quote">. */
   .prose :global(blockquote.pull-quote) {
@@ -786,7 +858,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
     color: var(--color-text-secondary);
   }
 
-  /* Editorial table — heavier horizontal rules above and below the table
+  /* Editorial table: heavier horizontal rules above and below the table
      (a top and a tail bar in the publication tradition), 1px row dividers,
      no vertical lines. Headers in mono small-caps; cells in body sans. */
   .prose :global(table) {
@@ -847,7 +919,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
     font-variant-numeric: tabular-nums;
   }
 
-  /* Footnotes — inline marker (superscript) + footnote list at end of
+  /* Footnotes: inline marker (superscript) + footnote list at end of
      article. The list is the last register before the colophon. */
   .prose :global(sup) {
     font-size: 0.7em;
@@ -917,9 +989,9 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
    * Panel-width tokens for the gridded variant. Defined on `main:has(.has-grid)`
    * so they cascade to all descendants (article, page-header, h2s, bleeds)
    * AND remain available to main's own pillar pseudos. Single source of
-   * geometry truth — changing the breakpoint or the cap touches one place.
+   * geometry truth: changing the breakpoint or the cap touches one place.
    *
-   * Defaults (any viewport): centered v2 layout — both side panels equal
+   * Defaults (any viewport): centered v2 layout: both side panels equal
    * to `(100vw - --measure-wide) / 2`. Used below the intermediate
    * breakpoint where the asymmetric grid can't carry its weight (Iris v4 #7).
    *
@@ -945,15 +1017,17 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
 
   /*
    * Vertical pillars. Mounted on <main> (not <body>) so they span only
-   * the content region between the site header and footer — main is
+   * the content region between the site header and footer: main is
    * `flex: 1 0 auto` inside the body's flex column, which means top: 0
    * / bottom: 0 on these pseudos lands exactly at main's edges.
    *
    * Each pillar's x sits at the boundary between a side panel and the
    * central panel, pulled directly from the cascaded asymm tokens.
    */
-  main:has(.has-grid)::before,
-  main:has(.has-grid)::after {
+  /* Pillars are gated on `.framed`. Gridded pages that don't opt in
+     keep the panel layout math but draw no vertical lines. */
+  main:has(.has-grid.framed)::before,
+  main:has(.has-grid.framed)::after {
     content: '';
     position: absolute;
     top: 0;
@@ -964,11 +1038,11 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
     z-index: 0;
   }
 
-  main:has(.has-grid)::before {
+  main:has(.has-grid.framed)::before {
     left: var(--asymm-left);
   }
 
-  main:has(.has-grid)::after {
+  main:has(.has-grid.framed)::after {
     right: var(--asymm-right);
   }
 
@@ -976,7 +1050,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
    * On gridded pages only, move the footer's top breathing room from its own
    * margin into <main>'s padding-bottom. Same total spacing as elsewhere, but
    * the gap now lives inside main, so the pillars span it and meet the
-   * footer's border-top right where it's always sat — directly above the
+   * footer's border-top right where it's always sat: directly above the
    * footer text.
    */
   main:has(.has-grid) {
@@ -988,7 +1062,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
   }
 
   /*
-   * Print. The site is built for screen — `100vw` math, position-absolute
+   * Print. The site is built for screen: `100vw` math, position-absolute
    * pillars, viewport-anchored horizontal rules, and asymmetric bleed
    * paradigms are all meaningful only on screen. Print flattens to a
    * centered single column with body text + figures, drops the decorative
@@ -1011,7 +1085,7 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
       --asymm-center: 100%;
     }
 
-    /* Drop the decorative grid chrome — pillars and 100vw rules are
+    /* Drop the decorative grid chrome: pillars and 100vw rules are
        viewport constructs that don't carry on paper. */
     main:has(.has-grid)::before,
     main:has(.has-grid)::after,
@@ -1050,4 +1124,3 @@ const fullTitle = `${frontmatter.title} — Juan C. Gonzalez`;
     }
   }
 </style>
-
